@@ -11,11 +11,11 @@ class Bot(discord.Client):
         super().__init__()
 
     async def on_ready(self):
-        logging.info(f"Logged in as {self.user}")
+        logging.debug(f"Logged in as {self.user}")
 
     async def on_message(self, message):
         if message.author == self.user:
             return
 
         if message.content.startswith("!"):
-            self.command_manager.execute(command=message)
+            await self.command_manager.execute(command=message)
