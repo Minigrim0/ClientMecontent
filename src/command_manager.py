@@ -19,9 +19,9 @@ class CommandManager:
                 !addword Test
                 returns :
                     {
-                        "user": "$UserID",
-                        "guild": "$GuildID",
-                        "channel": "$ChannelID",
+                        "user": "User",
+                        "guild": "Guild",
+                        "channel": "Channel",
                         "command": {
                             "command": "$Command",
                             "args": "$Args"
@@ -47,7 +47,7 @@ class CommandManager:
         command_dict = {"command": splitted[0][0][1:], "args": splitted[1:]}
 
         return {
-            "user": command.author.id,
+            "user": command.author,
             "guild": command.guild,
             "channel": command.channel,
             "command": command_dict,
