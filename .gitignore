@@ -1,3 +1,4 @@
 ve/
 .env
 dump.sql
+__pycache__/
