@@ -1,13 +1,15 @@
+import traceback
 import logging
-import discord
+import sys
 
 import asyncio
 
 
 class require_role:
     """
-        A decorator verifying that the user that wrote the command as the rights to execute this command
+    A decorator verifying that the user that wrote the command as the rights to execute this command
     """
+
     def __init__(self, func=None, *authorized_roles):
         self.func = func
         self.authorized_roles = authorized_roles
@@ -26,40 +28,32 @@ class require_role:
         return wrapper(*args, **kwargs)
 
 
-class log_this:
+def log_this(func):
     """
-        A decorator to log eventual errors occuring in the code
+    A decorator to log eventual errors occuring in the code
     """
-    def __init__(self, func=None):
-        self.func = func
+    if asyncio.iscoroutinefunction(func):
 
-    def __call__(self, *args, **kwargs):
-        print("In log this :", args, kwargs)
-        if not self.func:
-            return self.__class__(args[0])
-
-        if asyncio.iscoroutinefunction(self.func):
-            async def wrapper(*args, **kwargs):
-                try:
-                    result = await self.func(*args, **kwargs)
-                    return result
-                except Exception as e:
-                    logging.error(f"Error occured in {self.func.__name__} : {e}")
-                    logging.error(e.__traceback__)
-
-            return wrapper(*args, **kwargs)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             try:
-                result = self.func(*args, **kwargs)
+                result = await func(*args, **kwargs)
                 return result
             except Exception as e:
-                logging.error(f"Error occured in {self.func.__name__} : {e}")
-                logging.error(e.__traceback__)
+                logging.error(f"Error occured in {func.__name__} : {e}")
+                error_type, error, tb = sys.exc_info()
+                error_msg = "".join(traceback.format_exception(error_type, error, tb))
+                logging.error(error_msg)
 
-        return wrapper(*args, **kwargs)
+        return wrapper
 
-    @property
-    def __name__(self):
-        if self.func:
-            return self.func.__name__
-        return self.__class__.__name__
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+            return result
+        except Exception as e:
+            logging.error(f'Error occured in "{func.__name__}" : {e}')
+            error_type, error, tb = sys.exc_info()
+            error_msg = "".join(traceback.format_exception(error_type, error, tb))
+            logging.error(error_msg)
+
+    return wrapper
