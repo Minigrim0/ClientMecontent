@@ -1,17 +1,21 @@
+import logging
+
 import discord
-from src.commands_manager import CommandsManager
+from src.command_manager import CommandManager
 
 
 class Bot(discord.Client):
     def __init__(self):
-        self.command_manager = CommandsManager(client)
+        self.command_manager = CommandManager(self)
+
+        super().__init__()
 
     async def on_ready(self):
-        logging.info('Logged in as {0.user}'.format(client))
+        logging.info(f"Logged in as {self.user}")
 
     async def on_message(self, message):
-        if message.author == client.user:
+        if message.author == self.user:
             return
 
-        if message.content.startswith('!'):
+        if message.content.startswith("!"):
             self.command_manager.execute(command=message)
