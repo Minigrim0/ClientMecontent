@@ -3,7 +3,7 @@ import os
 import re
 import asyncio
 
-from src.decorators import log_this, require_role
+from src.decorators import log_this_async, require_role
 
 
 class CommandsManager:
@@ -13,11 +13,12 @@ class CommandsManager:
             "greet": self.greet
         }
 
-    def parse_command(self, command):
+    @log_this_async
+    async def parse_command(self, command):
         """Parse a given string into a dictionnary of information relative to the command
             Example :
                 !addword Test
-                returns : 
+                returns :
                     {
                         "user": "$UserID",
                         "guild": "$GuildID",
@@ -40,29 +41,27 @@ class CommandsManager:
             "channel": message.channel,
         }
         
-        return infos
-
     @require_role("Photographe Professionel", "Maitre des mots")
-    @log_this
+    @log_this_async
     async def addWord(self, args: dict):
         pass
 
     @require_role("Photographe Professionel", "Maitre des mots")
-    @log_this
+    @log_this_async
     async def delWord(self, args: dict):
         pass
 
     @require_role("Photographe Professionel", "Photographe")
-    @log_this
+    @log_this_async
     async def startGame(self, args: dict):
         pass
 
-    @log_this
+    @log_this_async
     def greet(self, args: dict):
         pass
 
-    @log_this
-    def execute(self, command):
-        parsed = self.parse_command(command)
+    @log_this_async
+    async def execute(self, command):
+        parsed = await self.parse_command(command)
         if parsed["command"]["command"] not in self.commands.keys():
             raise CommandNotFound(parsed["command"]["command"])
