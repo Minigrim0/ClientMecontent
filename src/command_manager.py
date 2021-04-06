@@ -4,14 +4,13 @@ import re
 import asyncio
 
 from src.decorators import log_this_async, require_role
+from src.exceptions import CommandNotFoundException, BadFormatException
 
 
-class CommandsManager:
+class CommandManager:
     def __init__(self, client):
         self.client = client
-        self.commands = {
-            "greet": self.greet
-        }
+        self.commands = {"greet": self.greet}
 
     @log_this_async
     async def parse_command(self, command):
@@ -64,4 +63,4 @@ class CommandsManager:
     async def execute(self, command):
         parsed = await self.parse_command(command)
         if parsed["command"]["command"] not in self.commands.keys():
-            raise CommandNotFound(parsed["command"]["command"])
+            raise CommandNotFoundException(parsed["command"]["command"])
