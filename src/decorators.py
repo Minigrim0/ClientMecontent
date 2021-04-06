@@ -2,7 +2,7 @@ import traceback
 import logging
 import sys
 
-import asyncio
+from src.utils import send_error_message
 
 
 class require_role:
@@ -15,7 +15,6 @@ class require_role:
         self.authorized_roles = authorized_roles
 
     def __call__(self, *args, **kwargs):
-        print("In require role :", args, kwargs)
         if not self.func:
             return self.__class__(args[0], authorized_roles=self.authorized_roles)
 
@@ -28,30 +27,18 @@ class require_role:
         return wrapper(*args, **kwargs)
 
 
-def log_this(func):
+def log_this_async(func):
     """
     A decorator to log eventual errors occuring in the code
     """
-    if asyncio.iscoroutinefunction(func):
 
-        async def wrapper(*args, **kwargs):
-            try:
-                result = await func(*args, **kwargs)
-                return result
-            except Exception as e:
-                logging.error(f"Error occured in {func.__name__} : {e}")
-                error_type, error, tb = sys.exc_info()
-                error_msg = "".join(traceback.format_exception(error_type, error, tb))
-                logging.error(error_msg)
-
-        return wrapper
-
-    def wrapper(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         try:
-            result = func(*args, **kwargs)
+            result = await func(*args, **kwargs)
             return result
         except Exception as e:
-            logging.error(f'Error occured in "{func.__name__}" : {e}')
+            await send_error_message(kwargs, e)
+            logging.error(f"Error occured in {func.__name__} : {e}")
             error_type, error, tb = sys.exc_info()
             error_msg = "".join(traceback.format_exception(error_type, error, tb))
             logging.error(error_msg)
