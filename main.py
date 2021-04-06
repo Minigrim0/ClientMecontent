@@ -1,16 +1,14 @@
 import logging
 import os
 
-import discord
+from src.client import Bot
 
-from src.client import bot
+if __name__ == "__main__":
+    client = Bot()
 
+    token = os.environ.get("API_KEY", None)
+    if token is None:
+        logging.error("No token provided ! Quitting")
+        exit(1)
 
-client = Bot()
-
-token = os.environ.get('API_KEY', None)
-if token is None:
-    logging.error("No token provided ! Quitting")
-    exit(1)
-
-client.run(token)
+    client.run(token)
