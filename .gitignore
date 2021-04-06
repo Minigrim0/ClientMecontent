@@ -2,3 +2,4 @@ ve/
 .env
 dump.sql
 __pycache__/
+.vscode/
