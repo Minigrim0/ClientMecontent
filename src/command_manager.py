@@ -34,12 +34,25 @@ class CommandManager:
         Returns:
             Infos: An dictionnary containing the information
         """
-        infos = {
+
+        regex = r"^!([a-zA-Z0-9])+( (([a-zA-Z0-9?!'éèàù\-_])+|(\"([a-zA-Z0-9?!'éèàù\-_ ])+\")))*?$"
+        if not re.match(regex, command.content):
+            raise BadFormatException(command=command.content, pattern=regex)
+
+        splitted = re.findall(
+            r"((?:[a-zA-Z0-9?!'éèàù\-_])+)|\"((?:[a-zA-Z0-9?!'éèàù\-_ ])+)\"",
+            command.content,
+        )
+
+        command_dict = {"command": splitted[0][0][1:], "args": splitted[1:]}
+
+        return {
             "user": command.author.id,
-            "guild": message.guild,
-            "channel": message.channel,
+            "guild": command.guild,
+            "channel": command.channel,
+            "command": command_dict,
         }
-        
+
     @require_role("Photographe Professionel", "Maitre des mots")
     @log_this_async
     async def addWord(self, args: dict):
