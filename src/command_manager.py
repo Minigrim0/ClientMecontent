@@ -1,7 +1,7 @@
 import discord
 import os
 import re
-import asyncio
+import random
 
 from src.decorators import log_this_async, require_role
 from src.exceptions import CommandNotFoundException, BadFormatException
@@ -69,11 +69,15 @@ class CommandManager:
         pass
 
     @log_this_async
-    def greet(self, args: dict):
-        pass
+    async def greet(self, args: dict):
+        greets = ["Hello {}", "Salut {}", "Coucou {}", "Hey {}", "{}, bien ou quoi ?"]
+        await args["channel"].send(random.choice(greets).format(args["user"].mention))
 
     @log_this_async
     async def execute(self, command):
-        parsed = await self.parse_command(command)
-        if parsed["command"]["command"] not in self.commands.keys():
-            raise CommandNotFoundException(parsed["command"]["command"])
+        args = await self.parse_command(command)
+        if args["command"]["command"] not in self.commands.keys():
+            raise CommandNotFoundException(args["command"]["command"])
+
+        else:
+            await self.commands[args["command"]["command"]](args)
