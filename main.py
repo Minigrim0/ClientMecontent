@@ -1,10 +1,10 @@
 import logging
 import os
 
-from src.client import Bot
+from singleton.client import Bot
 
 if __name__ == "__main__":
-    client = Bot()
+    client = Bot.getInstance()
 
     token = os.environ.get("API_KEY", None)
     if token is None:

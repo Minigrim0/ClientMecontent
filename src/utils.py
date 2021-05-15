@@ -1,4 +1,4 @@
-from src.settings import Settings
+from singleton.settings import Settings
 
 
 async def send_error_message(decorator_kwargs, error_msg: str):

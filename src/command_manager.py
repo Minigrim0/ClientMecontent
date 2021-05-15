@@ -4,8 +4,9 @@ import random
 from src.decorators import log_this_async, require_role
 from src.exceptions import CommandNotFoundException, BadFormatException
 
-from src.settings import Settings
-from src.game import Game
+from singleton.settings import Settings
+from singleton.game import Game
+from singleton.user import User
 
 
 class CommandManager:
