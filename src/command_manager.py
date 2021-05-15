@@ -50,7 +50,12 @@ class CommandManager:
             command.content,
         )
 
-        command_dict = {"command": splitted[0][0][1:], "args": splitted[1:]}
+        command_dict = {"command": splitted[0][0][1:]}
+
+        command_dict["args"] = [arg[0] for arg in splitted[1:]]
+
+        print(splitted)
+        print(command_dict)
 
         return {
             "user": command.author,
@@ -76,6 +81,11 @@ class CommandManager:
 
     @log_this_async
     async def greet(self, args: dict):
+        """Greets the user
+
+        Args:
+            args (dict): The argument dictionnary
+        """
         greets = ["Hello {}", "Salut {}", "Coucou {}", "Hey {}", "{}, bien ou quoi ?"]
         await args["channel"].send(random.choice(greets).format(args["user"].mention))
 
