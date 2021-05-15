@@ -42,6 +42,11 @@ class Game:
         ).fetchall()
         return words
 
+    def delWord(self, word: str):
+        pass
+
+    def startGame(self):
+        pass
 
     @connected
     def addUser(self, user, db, cursor):
@@ -50,3 +55,6 @@ class Game:
         )
         db.commit()
         return cursor.execute("SELECT last_insert_rowid()").fetchall()[0]
+
+    def addUserToGame(self, user_id: str, game_id: str):
+        pass
