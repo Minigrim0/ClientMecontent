@@ -1,7 +1,10 @@
 {
     "help": {
         "help": "Displays help messages",
-        "greet": "Greets the user"
+        "greet": "Greets the user",
+        "add": "Ajoute un ou plusieurs mots dans la base de données",
+        "del": "supprime un ou plusieurs mots de la base de données",
+        "list": "Liste les mots présents dans la base de données"
     },
     "database": {
         "location": "assets/photo.db"
