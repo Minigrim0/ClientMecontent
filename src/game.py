@@ -23,3 +23,11 @@ class Game:
         cursor.executescript(sql_script)
         db.commit()
 
+
+    @connected
+    def addUser(self, user, db, cursor):
+        cursor.execute(
+            "INSERT INTO Users (username, discord_id, score) VALUES (?, ?, ?)", (user.name, str(user.id), 0)
+        )
+        db.commit()
+        return cursor.execute("SELECT last_insert_rowid()").fetchall()[0]
