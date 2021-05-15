@@ -5,7 +5,20 @@ from src.command_manager import CommandManager
 
 
 class Bot(discord.Client):
+    instance = None
+
+    @staticmethod
+    def getInstance():
+        if Bot.instance is None:
+            Bot()
+        return Bot.instance
+
     def __init__(self):
+        if self.instance is not None:
+            raise Exception("This class is a singleton!")
+        else:
+            Bot.instance = self
+
         self.command_manager = CommandManager(self)
 
         super().__init__()
