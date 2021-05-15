@@ -10,21 +10,17 @@ class require_role:
     A decorator verifying that the user that wrote the command as the rights to execute this command
     """
 
-    def __init__(self, func=None, *authorized_roles):
-        self.func = func
+    def __init__(self, *authorized_roles):
         self.authorized_roles = authorized_roles
 
     def __call__(self, *args, **kwargs):
-        if not self.func:
-            return self.__class__(args[0], authorized_roles=self.authorized_roles)
+        func = args[0]
 
         async def wrapper(*args, **kwargs):
-            if len(args[0]) >= self.nb_parameters:
-                await self.func(*args, **kwargs)
-            else:
-                await args[1].send("T'as pas le droit !")
+            # TODO: Check the user's roles
+            await func(*args, **kwargs)
 
-        return wrapper(*args, **kwargs)
+        return wrapper  # (*args, **kwargs)
 
 
 def log_this_async(func):
