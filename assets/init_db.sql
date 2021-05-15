@@ -1,0 +1,33 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS Users
+(
+    ID         INTEGER PRIMARY KEY AUTOINCREMENT,
+    username   CHAR(128) NOT NULL,
+    discord_id CHAR(255) NOT NULL UNIQUE,
+    score      INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Game
+(
+    ID        INTEGER PRIMARY KEY AUTOINCREMENT,
+    start_date TIMESTAMP,
+    duration  INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Words
+(
+    ID         INTEGER PRIMARY KEY AUTOINCREMENT,
+    word       CHAR(255) UNIQUE,
+    creator_id INTEGER,
+    CONSTRAINT fk_user FOREIGN KEY (creator_id) REFERENCES Users (ID) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS userToGame
+(
+    user_id INTEGER,
+    game_id INTEGER,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Users (ID) ON DELETE CASCADE,
+    CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, game_id)
+);
