@@ -3,3 +3,4 @@ ve/
 dump.sql
 __pycache__/
 .vscode/
+*.db
