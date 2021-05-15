@@ -21,18 +21,6 @@ class CommandManager:
     @log_this_async
     async def parse_command(self, command):
         """Parse a given string into a dictionnary of information relative to the command
-            Example :
-                !addword Test
-                returns :
-                    {
-                        "user": "User",
-                        "guild": "Guild",
-                        "channel": "Channel",
-                        "command": {
-                            "command": "$Command",
-                            "args": "$Args"
-                        }
-                    }
 
         Args:
             command (string): The command the user typed
@@ -64,17 +52,17 @@ class CommandManager:
             "command": command_dict,
         }
 
-    @require_role("Photographe Professionel", "Maitre des mots")
+    @require_role("editor")
     @log_this_async
     async def addWord(self, args: dict):
         pass
 
-    @require_role("Photographe Professionel", "Maitre des mots")
+    @require_role("editor")
     @log_this_async
     async def delWord(self, args: dict):
         pass
 
-    @require_role("Photographe Professionel", "Photographe")
+    @require_role("player")
     @log_this_async
     async def startGame(self, args: dict):
         pass
