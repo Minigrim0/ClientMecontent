@@ -70,7 +70,7 @@ class CommandManager:
         response = ""
 
         for word, user in wordList:
-            response += f"{word.ljust(maxLength + 1)}|{user}\n"
+            response += f"{word.ljust(maxLength)} | {user}\n"
 
         response = f"Liste des mots :\n```\n{response}```"
 
@@ -80,7 +80,10 @@ class CommandManager:
     @log_this_async
     async def delWord(self, args: dict):
         for word in args["command"]["args"]:
-            Game.getInstance().delWord(word)
+            if Game.getInstance().delWord(word):
+                await args["channel"].send(f"Le mot {word} a été supprimé")
+            else:
+                await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
 
     @require_role("player")
     @log_this_async
