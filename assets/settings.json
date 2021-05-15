@@ -1,0 +1,9 @@
+{
+    "help": {
+        "help": "Displays help messages",
+        "greet": "Greets the user"
+    },
+    "database": {
+        "location": "assets/db.sqlite"
+    }
+}
