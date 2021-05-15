@@ -44,3 +44,18 @@ def log_this_async(func):
             logging.error(error_msg)
 
     return wrapper
+
+
+def connected(func):
+    """A decorator wrapping a sql connection to a database
+    """
+    def wrapper(*args, **kwargs):
+        db = sqlite3.connect(databaseLocation())
+        cursor = db.cursor()
+        kwargs["db"] = db
+        kwargs["cursor"] = cursor
+        result = func(*args, **kwargs)
+        db.close()
+        return result
+
+    return wrapper
