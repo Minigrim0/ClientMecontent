@@ -6,11 +6,17 @@ import random
 from src.decorators import log_this_async, require_role
 from src.exceptions import CommandNotFoundException, BadFormatException
 
+from src.settings import Settings
+
 
 class CommandManager:
     def __init__(self, client):
         self.client = client
-        self.commands = {"greet": self.greet}
+        self.commands = {
+            "greet": self.greet,
+            "help": self.help
+        }
+        self.help = Settings.getInstance()["help"]
 
     @log_this_async
     async def parse_command(self, command):
@@ -72,6 +78,26 @@ class CommandManager:
     async def greet(self, args: dict):
         greets = ["Hello {}", "Salut {}", "Coucou {}", "Hey {}", "{}, bien ou quoi ?"]
         await args["channel"].send(random.choice(greets).format(args["user"].mention))
+
+    @log_this_async
+    async def help(self, args: dict):
+        """Displays help messages
+
+        Args:
+            args (dict): The argument dictionnary
+        """
+        if len(args["command"]["args"]) >= 1:
+            for command in args["command"]["args"]:
+                if command in self.commands.keys():
+                    await args["channel"].send(f'```{command} :\n\t{self.help[command]}```')
+                else:
+                    await args["channel"].send(f"Commande inconnue '{command}'")
+        else:
+            help_msg = "```"
+            for command in self.commands.keys():
+                help_msg += f"{command}: \n\t{self.help[command]}\n\n"
+            help_msg += "```"
+            await args["channel"].send(help_msg)
 
     @log_this_async
     async def execute(self, command):
