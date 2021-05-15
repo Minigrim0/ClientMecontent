@@ -4,20 +4,18 @@ import json
 class Settings:
     instance = None
 
-    @staticmethod 
+    @staticmethod
     def getInstance():
-        """ Static access method. """
-        if Settings.instance == None:
+        if Settings.instance is None:
             Settings()
         return Settings.instance
 
     def __init__(self):
-        """ Virtually private constructor. """
-        if Settings.instance != None:
-            raise Exception("This class is a Settings!")
+        if Settings.instance is not None:
+            raise Exception("This class is a Singleton!")
         else:
             Settings.instance = self
-        
+
         with open("assets/settings.json") as settings:
             self.settings = json.load(settings)
 
