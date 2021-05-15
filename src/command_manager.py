@@ -7,6 +7,7 @@ from src.decorators import log_this_async, require_role
 from src.exceptions import CommandNotFoundException, BadFormatException
 
 from src.settings import Settings
+from src.game import Game
 
 
 class CommandManager:
@@ -14,7 +15,8 @@ class CommandManager:
         self.client = client
         self.commands = {
             "greet": self.greet,
-            "help": self.help
+            "help": self.help,
+            "add": self.addWord,
         }
         self.help = Settings.getInstance()["help"]
 
