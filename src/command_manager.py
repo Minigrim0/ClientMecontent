@@ -39,11 +39,7 @@ class CommandManager:
         )
 
         command_dict = {"command": splitted[0][0][1:]}
-
-        command_dict["args"] = [arg[0] for arg in splitted[1:]]
-
-        print(splitted)
-        print(command_dict)
+        command_dict["args"] = [arg[0] if arg[0] != '' else arg[1] for arg in splitted[1:]]
 
         return {
             "user": command.author,
