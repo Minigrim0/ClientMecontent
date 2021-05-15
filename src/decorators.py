@@ -32,8 +32,7 @@ def log_this_async(func):
 
     async def wrapper(*args, **kwargs):
         try:
-            result = await func(*args, **kwargs)
-            return result
+            return await func(*args, **kwargs)
         except Exception as e:
             await send_error_message(kwargs, e)
             logging.error(
