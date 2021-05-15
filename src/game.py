@@ -23,6 +23,18 @@ class Game:
         cursor.executescript(sql_script)
         db.commit()
 
+    @connected
+    def addWord(self, word: str, user, db, cursor):
+        user_id = cursor.execute("SELECT ID FROM Users WHERE discord_id=?", (str(user.id),)).fetchall()
+        if len(user_id) == 0:
+            user_id = self.addUser(user)
+        else:
+            user_id = user_id[0][0]
+
+        print(user_id)
+        cursor.execute("INSERT INTO Words (word, creator_id) VALUES (?, ?)", (word, user_id))
+        db.commit()
+
 
     @connected
     def addUser(self, user, db, cursor):

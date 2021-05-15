@@ -51,7 +51,14 @@ class CommandManager:
     @require_role("editor")
     @log_this_async
     async def addWord(self, args: dict):
-        pass
+        for word in args["command"]["args"]:
+            Game.getInstance().addWord(word, args["user"])
+
+        print("args :", args)
+
+        response = f'**{"**, **".join(args["command"]["args"])}** ajouté{(len(args["command"]["args"]) > 1) * "s"}'
+        await args["channel"].send(response)
+
 
     @require_role("editor")
     @log_this_async
