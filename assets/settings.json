@@ -4,6 +4,11 @@
         "greet": "Greets the user"
     },
     "database": {
-        "location": "assets/db.sqlite"
+        "location": "assets/photo.db"
+    },
+    "roles": {
+        "admin": "463818638508687369",
+        "editor": "843134833400348682",
+        "player": "843135040246120449"
     }
 }
