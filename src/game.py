@@ -42,8 +42,10 @@ class Game:
         ).fetchall()
         return words
 
-    def delWord(self, word: str):
-        pass
+    @connected
+    def delWord(self, word: str, db, cursor):
+        cursor.execute("DELETE FROM Words WHERE word=?", (word,))
+        db.commit()
 
     def startGame(self):
         pass

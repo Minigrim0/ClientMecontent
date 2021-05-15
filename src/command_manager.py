@@ -15,6 +15,7 @@ class CommandManager:
             "greet": self.greet,
             "help": self.help,
             "add": self.addWord,
+            "del": self.delWord,
             "list": self.listWord,
         }
         self.help = Settings.getInstance()["help"]
@@ -77,7 +78,8 @@ class CommandManager:
     @require_role("editor")
     @log_this_async
     async def delWord(self, args: dict):
-        pass
+        for word in args["command"]["args"]:
+            Game.getInstance().delWord(word)
 
     @require_role("player")
     @log_this_async
