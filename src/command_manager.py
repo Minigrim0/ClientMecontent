@@ -1,6 +1,8 @@
 import re
 import random
 
+from discord.utils import get
+
 from src.decorators import log_this_async, require_role
 from src.exceptions import CommandNotFoundException, BadFormatException
 
@@ -18,6 +20,7 @@ class CommandManager:
             "add": self.addWord,
             "del": self.delWord,
             "list": self.listWord,
+            "register": self.register
         }
         self.help = Settings.getInstance()["help"]
 
@@ -51,13 +54,20 @@ class CommandManager:
             "command": command_dict,
         }
 
+    async def register(self, args: dict):
+        if not User.getInstance().exists(args["user"]):
+            User.getInstance().addUser(args["user"])
+            role = get(args["guild"].roles, id=int(Settings.getInstance()["roles"]["player"]))
+            await args["user"].add_roles(role)
+            await args["channel"].send("Tu es maintenant un photographe !")
+        else:
+            await args["channel"].send("Tu es déjà enregistré !")
+
     @require_role("editor")
     @log_this_async
     async def addWord(self, args: dict):
         for word in args["command"]["args"]:
             Game.getInstance().addWord(word, args["user"])
-
-        print("args :", args)
 
         response = f'**{"**, **".join(args["command"]["args"])}** ajouté{(len(args["command"]["args"]) > 1) * "s"}'
         await args["channel"].send(response)
