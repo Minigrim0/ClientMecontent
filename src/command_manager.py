@@ -1,5 +1,3 @@
-import discord
-import os
 import re
 import random
 
@@ -17,6 +15,7 @@ class CommandManager:
             "greet": self.greet,
             "help": self.help,
             "add": self.addWord,
+            "list": self.listWord,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -61,6 +60,19 @@ class CommandManager:
         response = f'**{"**, **".join(args["command"]["args"])}** ajouté{(len(args["command"]["args"]) > 1) * "s"}'
         await args["channel"].send(response)
 
+    @require_role("player")
+    @log_this_async
+    async def listWord(self, args: dict):
+        wordList = Game.getInstance().listWords()
+        maxLength = max([len(word[0]) for word in wordList])
+        response = ""
+
+        for word, user in wordList:
+            response += f"{word.ljust(maxLength + 1)}|{user}\n"
+
+        response = f"Liste des mots :\n```\n{response}```"
+
+        await args["channel"].send(response)
 
     @require_role("editor")
     @log_this_async

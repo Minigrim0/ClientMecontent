@@ -35,6 +35,13 @@ class Game:
         cursor.execute("INSERT INTO Words (word, creator_id) VALUES (?, ?)", (word, user_id))
         db.commit()
 
+    @connected
+    def listWords(self, db, cursor):
+        words = cursor.execute(
+            "SELECT word, users.username FROM Words LEFT JOIN Users ON Words.creator_id=Users.id"
+        ).fetchall()
+        return words
+
 
     @connected
     def addUser(self, user, db, cursor):
