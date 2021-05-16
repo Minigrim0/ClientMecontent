@@ -4,7 +4,8 @@
         "greet": "Greets the user",
         "add": "Ajoute un ou plusieurs mots dans la base de données",
         "del": "supprime un ou plusieurs mots de la base de données",
-        "list": "Liste les mots présents dans la base de données"
+        "list": "Liste les mots présents dans la base de données",
+        "score": "Donne son score à l'utilisateur à l'origine de la commande"
     },
     "database": {
         "location": "assets/photo.db"
