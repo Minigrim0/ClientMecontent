@@ -1,6 +1,7 @@
 import re
 import random
 
+from discord import Embed
 from discord.utils import get
 
 from src.decorators import log_this_async, require_role
@@ -20,7 +21,8 @@ class CommandManager:
             "add": self.addWord,
             "del": self.delWord,
             "list": self.listWord,
-            "register": self.register
+            "register": self.register,
+            "score": self.getScore,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -55,13 +57,24 @@ class CommandManager:
         }
 
     async def register(self, args: dict):
-        if not User.getInstance().exists(args["user"]):
+        if not User.getInstance().exists(args['user']):
             User.getInstance().addUser(args["user"])
             role = get(args["guild"].roles, id=int(Settings.getInstance()["roles"]["player"]))
             await args["user"].add_roles(role)
             await args["channel"].send("Tu es maintenant un photographe !")
         else:
             await args["channel"].send("Tu es déjà enregistré !")
+
+    @require_role("player")
+    async def getScore(self, args:dict):
+        score = User.getInstance().getScore(args["user"])
+
+        embed = Embed(title=f"Profil de {args['user'].name}", color=0xff464a)
+        embed.set_thumbnail(url=args['user'].avatar_url)
+        embed.add_field(name="#score", value=f"{score['score']}", inline=True)
+        embed.add_field(name="#victoires", value=f"{score['victories']}", inline=True)
+        embed.add_field(name="#participations", value=f"{score['participations']}", inline=True)
+        await args["channel"].send(embed=embed)
 
     @require_role("editor")
     @log_this_async

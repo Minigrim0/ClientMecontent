@@ -30,3 +30,19 @@ class User:
         return cursor.execute(
             "SELECT COUNT(*) FROM Users WHERE discord_id=?", (user.id,)
         ).fetchall()[0][0] > 0
+
+    @connected
+    def getScore(self, user, db, cursor):
+        score = cursor.execute(
+            "SELECT score FROM Users WHERE discord_id=?", (user.id,)
+        ).fetchall()[0][0]
+
+        victories = cursor.execute(
+            "SELECT COUNT(*) FROM (SELECT userToGame.user_id as winner_id FROM Game LEFT JOIN userToGame ON userToGame.game_id = Game.id AND userToGame.votes=(SELECT MAX(votes) FROM userToGame WHERE game_id=Game.id)) WHERE winner_id = ?", (user.id,)
+        ).fetchall()[0][0]
+
+        participations = cursor.execute(
+            "SELECT COUNT(*) FROM userToGame WHERE user_id = ?", (user.id,)
+        ).fetchall()[0][0]
+
+        return locals()
