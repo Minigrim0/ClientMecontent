@@ -26,7 +26,6 @@ class CommandManager:
         }
         self.help = Settings.getInstance()["help"]
 
-    @log_this_async
     async def parse_command(self, command):
         """Parse a given string into a dictionnary of information relative to the command
 
@@ -56,6 +55,7 @@ class CommandManager:
             "command": command_dict,
         }
 
+    @log_this_async
     async def register(self, args: dict):
         if not User.getInstance().exists(args['user']):
             User.getInstance().addUser(args["user"])
@@ -66,6 +66,7 @@ class CommandManager:
             await args["channel"].send("Tu es déjà enregistré !")
 
     @require_role("player")
+    @log_this_async
     async def getScore(self, args: dict):
         score = User.getInstance().getScore(args["user"])
 
@@ -148,6 +149,5 @@ class CommandManager:
         args = await self.parse_command(command)
         if args["command"]["command"] not in self.commands.keys():
             raise CommandNotFoundException(args["command"]["command"])
-
         else:
             await self.commands[args["command"]["command"]](args=args)
