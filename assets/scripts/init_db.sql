@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS Game
     registration_phase BOOLEAN DEFAULT true, -- Whether the users can register to participate or not
     finished           BOOLEAN DEFAULT false,  -- Whether the game is finished (No more submission)
     start_date         TIMESTAMP,  -- The time the game started
+    end_date           TIMESTAMP,  -- The time the game (should) end(ed)
     duration           INTEGER  -- The duration of the game
 );
 
