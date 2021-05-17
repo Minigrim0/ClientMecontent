@@ -1,3 +1,5 @@
+from singleton.user import User
+
 from src.decorators import connected
 
 
@@ -51,6 +53,14 @@ class Game:
 
         return cursor.execute("SELECT last_insert_rowid() as id").fetchall()[0][0]
 
+    @connected
+    def addUserToGame(self, user_id: str, game_id: str, db, cursor, scripts):
+        """Add a user to a game
 
-    def addUserToGame(self, user_id: str, game_id: str):
-        pass
+        Args:
+            user_id (str): [description]
+            game_id (str): [description]
+        """
+        # TODO: Check if the user is not already in the game
+        cursor.execute(scripts["add_user_to_game"], (user_id, game_id, 0))
+        db.commit()
