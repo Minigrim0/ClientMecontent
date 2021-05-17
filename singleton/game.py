@@ -18,17 +18,14 @@ class Game:
 
     @connected
     def addWord(self, word: str, user, db, cursor, scripts):
-        user_id = cursor.execute("SELECT ID FROM Users WHERE discord_id=?", (str(user.id),)).fetchall()
-
-        cursor.execute("INSERT INTO Words (word, creator_id) VALUES (?, ?)", (word, user_id))
+        user_id = User.getInstance().getUserID(str(user.id))
+        print(user_id)
+        cursor.execute(scripts["add_word"], (word, user_id))
         db.commit()
 
     @connected
     def listWords(self, db, cursor, scripts):
-        words = cursor.execute(
-            "SELECT word, users.username FROM Words LEFT JOIN Users ON Words.creator_id=Users.id"
-        ).fetchall()
-        return words
+        return cursor.execute(scripts["list_words"]).fetchall()
 
     @connected
     def delWord(self, word: str, db, cursor, scripts):
