@@ -5,11 +5,13 @@ from discord import Embed
 from discord.utils import get
 
 from src.decorators import log_this_async, require_role, require_parameters
-from src.exceptions import CommandNotFoundException, BadFormatException
+from src.exceptions import CommandNotFoundException, BadFormatException, BadTypeArgumentException
 
 from singleton.settings import Settings
 from singleton.game import Game
 from singleton.user import User
+
+from src.utils import gameEmbed
 
 
 class CommandManager:
@@ -62,7 +64,15 @@ class CommandManager:
     @log_this_async
     async def newGame(self, args: dict):
         duration = args["command"]["args"][0]
-        await args["channel"].send(duration)
+        if not duration.isdigit():
+            raise BadTypeArgumentException(arg=duration, requiredType=int)
+        game_id = Game.getInstance().createGame(duration)
+        user_id = User.getInstance().getUserID(args["user"].id)
+        Game.getInstance().addUserToGame(user_id, game_id)
+        participants = Game.getInstance().getParticipants(game_id)
+
+        embed = gameEmbed(gameID=game_id, duration=duration, participants=participants)
+        await args["channel"].send(embed=embed)
 
     @require_role("player")
     @require_parameters(1)
