@@ -1,4 +1,3 @@
-from singleton.settings import Settings
 from src.decorators import connected
 
 
@@ -16,6 +15,10 @@ class User:
             raise Exception("This class is a singleton!")
         else:
             User.instance = self
+
+    @connected
+    def getUserID(self, discordID: str, db, cursor, scripts):
+        return cursor.execute(scripts["get_user_id"], (discordID,)).fetchall()[0][0]
 
     @connected
     def addUser(self, user, db, cursor, scripts):
