@@ -150,4 +150,4 @@ class CommandManager:
             raise CommandNotFoundException(args["command"]["command"])
 
         else:
-            await self.commands[args["command"]["command"]](args)
+            await self.commands[args["command"]["command"]](args=args)

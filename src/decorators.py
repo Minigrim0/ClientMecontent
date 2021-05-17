@@ -14,14 +14,18 @@ class require_role:
     """
 
     def __init__(self, *authorized_roles):
-        self.authorized_roles = authorized_roles
+        self.authorized_roles = [Settings.getInstance()["roles"][role] for role in authorized_roles]
 
     def __call__(self, *args, **kwargs):
         func = args[0]
 
         async def wrapper(*args, **kwargs):
-            # TODO: Check the user's roles
-            await func(*args, **kwargs)
+            user = kwargs["args"]["user"]
+
+            if any(str(role.id) in set(self.authorized_roles) for role in user.roles):
+                await func(*args, **kwargs)
+            else:
+                await kwargs["args"]["channel"].send("Tu n'as pas la permission de faire ceci !")
 
         return wrapper  # (*args, **kwargs)
 
