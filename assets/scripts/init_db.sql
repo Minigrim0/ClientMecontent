@@ -10,9 +10,11 @@ CREATE TABLE IF NOT EXISTS Users
 
 CREATE TABLE IF NOT EXISTS Game
 (
-    ID        INTEGER PRIMARY KEY AUTOINCREMENT,
-    start_date TIMESTAMP,
-    duration  INTEGER
+    ID                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    registration_phase BOOLEAN DEFAULT true, -- Whether the users can register to participate or not
+    finished           BOOLEAN DEFAULT false,  -- Whether the game is finished (No more submission)
+    start_date         TIMESTAMP,  -- The time the game started
+    duration           INTEGER  -- The duration of the game
 );
 
 CREATE TABLE IF NOT EXISTS Words

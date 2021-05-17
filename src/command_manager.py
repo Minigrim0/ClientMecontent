@@ -66,7 +66,7 @@ class CommandManager:
             await args["channel"].send("Tu es déjà enregistré !")
 
     @require_role("player")
-    async def getScore(self, args:dict):
+    async def getScore(self, args: dict):
         score = User.getInstance().getScore(args["user"])
 
         embed = Embed(title=f"Profil de {args['user'].name}", color=0xff464a)
