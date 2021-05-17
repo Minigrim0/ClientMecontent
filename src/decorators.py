@@ -9,8 +9,7 @@ from singleton.settings import Settings
 
 
 class require_role:
-    """
-    A decorator verifying that the user that wrote the command as the rights to execute this command
+    """A decorator verifying that the user that wrote the command as the rights to execute this command
     """
 
     def __init__(self, *authorized_roles):
@@ -30,9 +29,30 @@ class require_role:
         return wrapper  # (*args, **kwargs)
 
 
-def log_this_async(func):
+class require_parameters:
+    """A decorator checking that the amount of parameters is correct for the command to work
     """
-    A decorator to log eventual errors occuring in the code
+
+    def __init__(self, nb_parameters):
+        self.nb_parameters = nb_parameters
+
+    def __call__(self, *args, **kwargs):
+        func = args[0]
+
+        async def wrapper(*args, **kwargs):
+            args = kwargs["args"]["command"]["args"]
+
+            if len(args) == self.nb_parameters:
+                await func(*args, **kwargs)
+            else:
+                await kwargs["args"]["channel"].send(
+                    f"Ta commande n'a pas le bon nombre de paramètres ! (Requis: {self.nb_parameters})")
+
+        return wrapper  # (*args, **kwargs)
+
+
+def log_this_async(func):
+    """A decorator to log eventual errors occuring in the code
     """
 
     async def wrapper(*args, **kwargs):
@@ -53,6 +73,7 @@ def log_this_async(func):
 def connected(func):
     """A decorator wrapping a sql connection to a database
     """
+
     def wrapper(*args, **kwargs):
         db = sqlite3.connect(databaseLocation())
         cursor = db.cursor()
