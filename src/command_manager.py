@@ -4,7 +4,7 @@ import random
 from discord import Embed
 from discord.utils import get
 
-from src.decorators import log_this_async, require_role
+from src.decorators import log_this_async, require_role, require_parameters
 from src.exceptions import CommandNotFoundException, BadFormatException
 
 from singleton.settings import Settings
@@ -23,6 +23,8 @@ class CommandManager:
             "list": self.listWord,
             "register": self.register,
             "score": self.getScore,
+            "new": self.newGame,
+            "start": self.startGame,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -54,6 +56,19 @@ class CommandManager:
             "channel": command.channel,
             "command": command_dict,
         }
+
+    @require_role("player")
+    @require_parameters(1)
+    @log_this_async
+    async def newGame(self, args: dict):
+        duration = args["command"]["args"][0]
+        await args["channel"].send(duration)
+
+    @require_role("player")
+    @require_parameters(1)
+    @log_this_async
+    async def startGame(self, args: dict):
+        pass
 
     @log_this_async
     async def register(self, args: dict):
@@ -108,11 +123,6 @@ class CommandManager:
                 await args["channel"].send(f"Le mot {word} a été supprimé")
             else:
                 await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
-
-    @require_role("player")
-    @log_this_async
-    async def startGame(self, args: dict):
-        pass
 
     @log_this_async
     async def greet(self, args: dict):
