@@ -18,9 +18,9 @@ class CommandManager:
         self.commands = {
             "greet": self.greet,
             "help": self.help,
-            "add": self.addWord,
-            "del": self.delWord,
-            "list": self.listWord,
+            "wadd": self.addWord,
+            "wdel": self.delWord,
+            "wlist": self.listWord,
             "register": self.register,
             "score": self.getScore,
             "new": self.newGame,

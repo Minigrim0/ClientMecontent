@@ -2,9 +2,9 @@
     "help": {
         "help": "Montre la liste des commandes",
         "greet": "Salue l'utilisateur",
-        "add": "Ajoute un ou plusieurs mots dans la base de données",
-        "del": "supprime un ou plusieurs mots de la base de données",
-        "list": "Liste les mots présents dans la base de données",
+        "wadd": "Ajoute un ou plusieurs mots dans la base de données",
+        "wdel": "supprime un ou plusieurs mots de la base de données",
+        "wlist": "Liste les mots présents dans la base de données",
         "register": "Enregistre l'utilisateur comme photographe",
         "score": "Donne son score à l'utilisateur à l'origine de la commande",
         "new": "Créer une nouvelle partie",
