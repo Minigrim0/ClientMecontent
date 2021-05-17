@@ -1,3 +1,4 @@
+from singleton.settings import Settings
 from src.decorators import connected
 
 
@@ -17,32 +18,32 @@ class User:
             User.instance = self
 
     @connected
-    def addUser(self, user, db, cursor):
+    def addUser(self, user, db, cursor, scripts):
         cursor.execute(
-            "INSERT INTO Users (username, discord_id, score) VALUES (?, ?, ?)", (user.name, str(user.id), 0)
+            scripts["add_user"], (user.name, str(user.id), 0)
         )
 
         db.commit()
         return cursor.execute("SELECT last_insert_rowid()").fetchall()[0][0]
 
     @connected
-    def exists(self, user, db, cursor):
+    def exists(self, user, db, cursor, scripts):
         return cursor.execute(
             "SELECT COUNT(*) FROM Users WHERE discord_id=?", (user.id,)
         ).fetchall()[0][0] > 0
 
     @connected
-    def getScore(self, user, db, cursor):
+    def getScore(self, user, db, cursor, scripts):
         score = cursor.execute(
             "SELECT score FROM Users WHERE discord_id=?", (user.id,)
         ).fetchall()[0][0]
 
         victories = cursor.execute(
-            "SELECT COUNT(*) FROM (SELECT userToGame.user_id as winner_id FROM Game LEFT JOIN userToGame ON userToGame.game_id = Game.id AND userToGame.votes=(SELECT MAX(votes) FROM userToGame WHERE game_id=Game.id)) WHERE winner_id = ?", (user.id,)
+            scripts["victories"], (user.id,)
         ).fetchall()[0][0]
 
         participations = cursor.execute(
-            "SELECT COUNT(*) FROM userToGame WHERE user_id = ?", (user.id,)
+            scripts["participations"], (user.id,)
         ).fetchall()[0][0]
 
         return locals()
