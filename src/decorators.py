@@ -5,6 +5,7 @@ from datetime import datetime
 import sys
 
 from src.utils import send_error_message, databaseLocation
+from singleton.settings import Settings
 
 
 class require_role:
@@ -53,6 +54,7 @@ def connected(func):
         cursor = db.cursor()
         kwargs["db"] = db
         kwargs["cursor"] = cursor
+        kwargs["scripts"] = Settings.getInstance()["scripts"]
         result = func(*args, **kwargs)
         db.close()
         return result
