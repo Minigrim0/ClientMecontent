@@ -138,11 +138,10 @@ class CommandManager:
                 else:
                     await args["channel"].send(f"Commande inconnue '{command}'")
         else:
-            help_msg = "```"
+            embed = Embed(title="Liste de commandes", color=0xff464a)
             for command in self.commands.keys():
-                help_msg += f"{command}: \n\t{self.help[command]}\n\n"
-            help_msg += "```"
-            await args["channel"].send(help_msg)
+                embed.add_field(name=command, value=self.help[command], inline=False)
+            await args["channel"].send(embed=embed)
 
     @log_this_async
     async def execute(self, command):
