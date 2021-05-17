@@ -39,8 +39,21 @@ class Game:
 
         return exists
 
-    def startGame(self):
-        pass
+    @connected
+    def startGame(self, duration: int, db, cursor, scripts):
+        """Adds a new game row in the database with the given duration and returns the id of this game
+
+        Args:
+            duration (int): The duration of the game to add
+
+        Returns:
+            int: the id of the added game
+        """
+        cursor.execute(scripts["create_game"], (duration,))
+        db.commit()
+
+        return cursor.execute("SELECT last_insert_rowid() as id").fetchall()[0][0]
+
 
     def addUserToGame(self, user_id: str, game_id: str):
         pass

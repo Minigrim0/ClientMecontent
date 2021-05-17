@@ -1,1 +1,2 @@
-INSERT INTO Game (start_date, duration) VALUES (CURRENT_TIMESTAMP, ?)
+-- Creates a game of a certain duration
+INSERT INTO Game (duration) VALUES (?)
