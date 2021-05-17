@@ -39,7 +39,7 @@ class Game:
         return exists
 
     @connected
-    def startGame(self, duration: int, db, cursor, scripts):
+    def createGame(self, duration: int, db, cursor, scripts):
         """Adds a new game row in the database with the given duration and returns the id of this game
 
         Args:
@@ -54,6 +54,21 @@ class Game:
         return cursor.execute("SELECT last_insert_rowid() as id").fetchall()[0][0]
 
     @connected
+    def startGame(self, game_id: int, db, cursor, scripts):
+        """Start the game with the given ID
+
+        Args:
+            game_id (int): the ID of the game to start
+
+        Returns:
+            int: the end date of the started game
+        """
+        cursor.execute(scripts["start_game"], (game_id,))
+        db.commit()
+
+        return cursor.execute(scripts["get_game_end"]).fetchall()[0][0]
+
+    @connected
     def addUserToGame(self, user_id: str, game_id: str, db, cursor, scripts):
         """Add a user to a game
 
@@ -64,3 +79,7 @@ class Game:
         # TODO: Check if the user is not already in the game
         cursor.execute(scripts["add_user_to_game"], (user_id, game_id, 0))
         db.commit()
+
+    @connected
+    def getParticipants(self, game_id: int, db, cursor, scripts):
+        return cursor.execute(scripts["get_participants"], (game_id,)).fetchall()
