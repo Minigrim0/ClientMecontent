@@ -1,3 +1,5 @@
+from discord import Embed
+
 from src.decorators import needsDatabase
 
 from singleton.user import User
@@ -20,6 +22,9 @@ class Word:
 
     @needsDatabase
     def addWord(self, word: str, user, db):
+        if len(word) > 255:
+            raise Exception(f"Le mot ne peut pas être plus long que 255 caractères ! (Actuel : {len(word)})")
+
         user_id = User.getInstance().getUserID(str(user.id))
         db.update(script="add_word", params=(word, user_id))
 
