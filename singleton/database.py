@@ -36,6 +36,5 @@ class Database:
         Args:
             script (str): the name of the script to execute
         """
-        print(script)
         cursor.execute(scripts[script], params)
         db.commit()
