@@ -122,16 +122,9 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def listWord(self, args: dict):
-        wordList = Word.getInstance().listWords()
-        maxLength = max([len(word[0]) for word in wordList])
-        response = ""
+        listEmbed = Word.getInstance().listWords()
 
-        for word, user in wordList:
-            response += f"{word.ljust(maxLength)} | {user}\n"
-
-        response = f"Liste des mots :\n```\n{response}```"
-
-        await args["channel"].send(response)
+        await args["channel"].send(embed=listEmbed)
 
     @require_role("editor")
     @log_this_async

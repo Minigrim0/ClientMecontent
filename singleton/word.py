@@ -25,7 +25,15 @@ class Word:
 
     @needsDatabase
     def listWords(self, db):
-        return db.fetch(script="list_words")
+        words = db.fetch(script="list_words")
+
+        embed = Embed(title="Liste de mots", color=0xFF464A)
+        for word, user in words:
+            embed.add_field(name=word, value=user, inline=False)
+        if len(words) == 0:
+            embed.add_field(name="plutôt vide", value="meh", inline=False)
+
+        return embed
 
     @needsDatabase
     def delWord(self, word: str, db):
