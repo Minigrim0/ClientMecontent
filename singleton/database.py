@@ -1,4 +1,3 @@
-
 from src.decorators import connected
 
 
@@ -19,4 +18,24 @@ class Database:
             Database.instance = self
 
         cursor.executescript(scripts["init_db"])
+        db.commit()
+
+    @connected
+    def fetch(self, db, cursor, scripts, script: str, params=tuple()):
+        """Execute a script in order to fetch data from the database
+
+        Args:
+            script (str): the name of the script to execute
+        """
+        return cursor.execute(scripts[script], params).fetchall()
+
+    @connected
+    def update(self, db, cursor, scripts, script: str, params=tuple()):
+        """Execute a script in order to fetch data from the database
+
+        Args:
+            script (str): the name of the script to execute
+        """
+        print(script)
+        cursor.execute(scripts[script], params)
         db.commit()
