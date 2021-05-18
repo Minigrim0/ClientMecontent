@@ -56,7 +56,8 @@ class Game:
             user_id (str): [description]
             game_id (str): [description]
         """
-        # TODO: Check if the user is not already in the game
+        if game_id in User.getInstance().getGames(user_id):
+            raise Exception("Tu participe déjà à cette partie !")
         db.update(script="add_user_to_game", params=(user_id, game_id, 0))
 
     @needsDatabase
