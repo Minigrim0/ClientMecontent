@@ -68,9 +68,8 @@ class CommandManager:
         game_id = Game.getInstance().createGame(duration)
         user_id = User.getInstance().getUserID(args["user"].id)
         Game.getInstance().addUserToGame(user_id, game_id)
-        participants = Game.getInstance().getParticipants(game_id)
 
-        embed = Game.getInstance().gameEmbed(gameID=game_id, duration=duration, participants=participants)
+        embed = Game.getInstance().gameEmbed(game_id=game_id)
         await args["channel"].send(embed=embed)
 
     @require_parameters(1)
