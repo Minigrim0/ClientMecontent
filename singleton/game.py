@@ -1,6 +1,9 @@
 from discord import Embed
 
 from src.decorators import needsDatabase
+from singleton.user import User
+
+from src.exceptions import BadTypeArgumentException
 
 
 class Game:
@@ -69,13 +72,17 @@ class Game:
         return db.fetch(script="get_game_duration", params=(game_id,))[0][0]
 
     @needsDatabase
-    def gameEmbed(self, game_id: int, db):
-        print(self.getGameDuration(game_id=game_id))
+    def gameEmbed(self, game_id: str, db):
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, required_type=int)
+
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
         embed.add_field(name="#Durée", value=f"{self.getGameDuration(game_id=game_id)}", inline=False)
-        embed.add_field(
-            name="#Partipants",
-            value="\n".join([f"- {user[0]}" for user in self.getParticipants(game_id=game_id)]),
-            inline=False,
-        )
+
+        participants = "\n".join([f"- {user[0]}" for user in self.getParticipants(game_id=game_id)])
+        if participants != "":
+            embed.add_field(name="#Partipants", value=participants, inline=False)
+        else:
+            embed.add_field(name="#Partipants", value="personne lel", inline=False)
+
         return embed

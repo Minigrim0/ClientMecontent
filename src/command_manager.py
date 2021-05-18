@@ -74,8 +74,6 @@ class CommandManager:
     @log_this_async
     async def gameInfo(self, args: dict):
         game_id = args["command"]["args"][0]
-        if not game_id.isdigit():
-            raise BadTypeArgumentException(arg=game_id, required_type=int)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
