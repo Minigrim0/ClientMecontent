@@ -10,7 +10,7 @@ from src.exceptions import CommandNotFoundException, BadFormatException, BadType
 from singleton.settings import Settings
 from singleton.game import Game
 from singleton.user import User
-from singleton.word import WordModel
+from singleton.word import Word
 
 
 class CommandManager:
@@ -114,7 +114,7 @@ class CommandManager:
     @log_this_async
     async def addWord(self, args: dict):
         for word in args["command"]["args"]:
-            WordModel.getInstance().addWord(word, args["user"])
+            Word.getInstance().addWord(word, args["user"])
 
         response = f'**{"**, **".join(args["command"]["args"])}** ajouté{(len(args["command"]["args"]) > 1) * "s"}'
         await args["channel"].send(response)
@@ -122,7 +122,7 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def listWord(self, args: dict):
-        wordList = WordModel.getInstance().listWords()
+        wordList = Word.getInstance().listWords()
         maxLength = max([len(word[0]) for word in wordList])
         response = ""
 
@@ -137,7 +137,7 @@ class CommandManager:
     @log_this_async
     async def delWord(self, args: dict):
         for word in args["command"]["args"]:
-            if WordModel.getInstance().delWord(word):
+            if Word.getInstance().delWord(word):
                 await args["channel"].send(f"Le mot {word} a été supprimé")
             else:
                 await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
@@ -168,7 +168,10 @@ class CommandManager:
         else:
             embed = Embed(title="Liste de commandes", color=0xFF464A)
             for command in self.commands.keys():
-                embed.add_field(name=command, value=self.help[command], inline=False)
+                if command in self.help.keys():
+                    embed.add_field(name=command, value=self.help[command], inline=False)
+                else:
+                    embed.add_field(name=command, value="¯\\_(ツ)_/¯", inline=False)
             await args["channel"].send(embed=embed)
 
     @log_this_async

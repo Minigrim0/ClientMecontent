@@ -3,20 +3,20 @@ from src.decorators import needsDatabase
 from singleton.user import User
 
 
-class WordModel:
+class Word:
     instance = None
 
     @staticmethod
     def getInstance():
-        if WordModel.instance is None:
-            WordModel()
-        return WordModel.instance
+        if Word.instance is None:
+            Word()
+        return Word.instance
 
     def __init__(self):
-        if WordModel.instance is not None:
+        if Word.instance is not None:
             raise Exception("This class is a singleton !")
         else:
-            WordModel.instance = self
+            Word.instance = self
 
     @needsDatabase
     def addWord(self, word: str, user, db):
