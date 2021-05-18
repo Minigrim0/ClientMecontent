@@ -10,6 +10,7 @@ from src.exceptions import CommandNotFoundException, BadFormatException, BadType
 from singleton.settings import Settings
 from singleton.game import Game
 from singleton.user import User
+from singleton.word import WordModel
 
 
 class CommandManager:
@@ -25,7 +26,7 @@ class CommandManager:
             "score": self.getScore,
             "new": self.newGame,
             "start": self.startGame,
-            "info": self.gameInfo
+            "info": self.gameInfo,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -49,7 +50,7 @@ class CommandManager:
         )
 
         command_dict = {"command": splitted[0][0][1:]}
-        command_dict["args"] = [arg[0] if arg[0] != '' else arg[1] for arg in splitted[1:]]
+        command_dict["args"] = [arg[0] if arg[0] != "" else arg[1] for arg in splitted[1:]]
 
         return {
             "user": command.author,
@@ -89,7 +90,7 @@ class CommandManager:
 
     @log_this_async
     async def register(self, args: dict):
-        if not User.getInstance().exists(args['user']):
+        if not User.getInstance().exists(args["user"]):
             User.getInstance().addUser(args["user"])
             role = get(args["guild"].roles, id=int(Settings.getInstance()["roles"]["player"]))
             await args["user"].add_roles(role)
@@ -102,8 +103,8 @@ class CommandManager:
     async def getScore(self, args: dict):
         score = User.getInstance().getScore(args["user"])
 
-        embed = Embed(title=f"Profil de {args['user'].name}", color=0xff464a)
-        embed.set_thumbnail(url=args['user'].avatar_url)
+        embed = Embed(title=f"Profil de {args['user'].name}", color=0xFF464A)
+        embed.set_thumbnail(url=args["user"].avatar_url)
         embed.add_field(name="#score", value=f"{score['score']}", inline=True)
         embed.add_field(name="#victoires", value=f"{score['victories']}", inline=True)
         embed.add_field(name="#participations", value=f"{score['participations']}", inline=True)
@@ -113,7 +114,7 @@ class CommandManager:
     @log_this_async
     async def addWord(self, args: dict):
         for word in args["command"]["args"]:
-            Game.getInstance().addWord(word, args["user"])
+            WordModel.getInstance().addWord(word, args["user"])
 
         response = f'**{"**, **".join(args["command"]["args"])}** ajouté{(len(args["command"]["args"]) > 1) * "s"}'
         await args["channel"].send(response)
@@ -121,7 +122,7 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def listWord(self, args: dict):
-        wordList = Game.getInstance().listWords()
+        wordList = WordModel.getInstance().listWords()
         maxLength = max([len(word[0]) for word in wordList])
         response = ""
 
@@ -136,7 +137,7 @@ class CommandManager:
     @log_this_async
     async def delWord(self, args: dict):
         for word in args["command"]["args"]:
-            if Game.getInstance().delWord(word):
+            if WordModel.getInstance().delWord(word):
                 await args["channel"].send(f"Le mot {word} a été supprimé")
             else:
                 await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
@@ -161,11 +162,11 @@ class CommandManager:
         if len(args["command"]["args"]) >= 1:
             for command in args["command"]["args"]:
                 if command in self.commands.keys():
-                    await args["channel"].send(f'```{command} :\n\t{self.help[command]}```')
+                    await args["channel"].send(f"```{command} :\n\t{self.help[command]}```")
                 else:
                     await args["channel"].send(f"Commande inconnue '{command}'")
         else:
-            embed = Embed(title="Liste de commandes", color=0xff464a)
+            embed = Embed(title="Liste de commandes", color=0xFF464A)
             for command in self.commands.keys():
                 embed.add_field(name=command, value=self.help[command], inline=False)
             await args["channel"].send(embed=embed)
