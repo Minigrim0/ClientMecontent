@@ -38,7 +38,7 @@ class Game:
         return db.update(script="create_game", params=(duration,))
 
     @needsDatabase
-    def startGame(self, game_id: int, db):
+    def startGame(self, game_id: str, db):
         """Start the game with the given ID
 
         Args:
@@ -47,9 +47,12 @@ class Game:
         Returns:
             int: the end date of the started game
         """
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, required_type=int)
+
         db.update(script="start_game", params=(game_id,))
 
-        return db.fetch(script="get_game_end")[0][0]
+        return db.fetch(script="get_game_end", params=(game_id,))[0][0]
 
     @needsDatabase
     def addUserToGame(self, user_id: str, game_id: str, db):

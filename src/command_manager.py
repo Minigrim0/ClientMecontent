@@ -81,7 +81,10 @@ class CommandManager:
     @require_parameters(1)
     @log_this_async
     async def startGame(self, args: dict):
-        pass
+        game_id = args["command"]["args"][0]
+
+        duration = Game.getInstance().startGame(game_id=game_id)
+        await args["channel"].send(f"La partie #{game_id} vient de démarrer et finira le {duration} !")
 
     @log_this_async
     async def register(self, args: dict):
