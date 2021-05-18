@@ -85,3 +85,17 @@ def connected(func):
         return result
 
     return wrapper
+
+
+def needsDatabase(func):
+    """A decorator wrapping a sql connection to a database"""
+    from singleton.database import Database
+
+    def wrapper(*args, **kwargs):
+        db = sqlite3.connect(databaseLocation())
+        kwargs["db"] = Database.getInstance()
+        result = func(*args, **kwargs)
+        db.close()
+        return result
+
+    return wrapper
