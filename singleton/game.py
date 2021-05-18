@@ -1,7 +1,6 @@
 from discord import Embed
 
-from singleton.user import User
-from src.decorators import connected
+from src.decorators import needsDatabase
 
 
 class Game:
@@ -19,28 +18,8 @@ class Game:
         else:
             Game.instance = self
 
-    @connected
-    def addWord(self, word: str, user, db, cursor, scripts):
-        user_id = User.getInstance().getUserID(str(user.id))
-        print(user_id)
-        cursor.execute(scripts["add_word"], (word, user_id))
-        db.commit()
-
-    @connected
-    def listWords(self, db, cursor, scripts):
-        return cursor.execute(scripts["list_words"]).fetchall()
-
-    @connected
-    def delWord(self, word: str, db, cursor, scripts):
-        exists = cursor.execute("SELECT COUNT(*) FROM Words WHERE word=?", (word,)).fetchall()[0][0] == 1
-        if exists:
-            cursor.execute("DELETE FROM Words WHERE word=?", (word,))
-            db.commit()
-
-        return exists
-
-    @connected
-    def createGame(self, duration: int, db, cursor, scripts):
+    @needsDatabase
+    def createGame(self, duration: int, db):
         """Adds a new game row in the database with the given duration and returns the id of this game
 
         Args:
@@ -49,13 +28,12 @@ class Game:
         Returns:
             int: the id of the added game
         """
-        cursor.execute(scripts["create_game"], (duration,))
-        db.commit()
+        db.update(script="create_game", params=(duration,))
 
-        return cursor.execute("SELECT last_insert_rowid() as id").fetchall()[0][0]
+        return db.fetch(script="last_row_id")[0][0]
 
-    @connected
-    def startGame(self, game_id: int, db, cursor, scripts):
+    @needsDatabase
+    def startGame(self, game_id: int, db):
         """Start the game with the given ID
 
         Args:
@@ -64,13 +42,12 @@ class Game:
         Returns:
             int: the end date of the started game
         """
-        cursor.execute(scripts["start_game"], (game_id,))
-        db.commit()
+        db.update(script="start_game", params=(game_id,))
 
-        return cursor.execute(scripts["get_game_end"]).fetchall()[0][0]
+        return db.fetch(script="get_game_end")[0][0]
 
-    @connected
-    def addUserToGame(self, user_id: str, game_id: str, db, cursor, scripts):
+    @needsDatabase
+    def addUserToGame(self, user_id: str, game_id: str, db):
         """Add a user to a game
 
         Args:
@@ -78,27 +55,24 @@ class Game:
             game_id (str): [description]
         """
         # TODO: Check if the user is not already in the game
-        cursor.execute(scripts["add_user_to_game"], (user_id, game_id, 0))
-        db.commit()
+        db.update(script="add_user_to_game", params=(user_id, game_id, 0))
 
-    @connected
-    def getParticipants(self, game_id: int, db, cursor, scripts):
-        return cursor.execute(scripts["get_participants"], (game_id,)).fetchall()
+    @needsDatabase
+    def getParticipants(self, game_id: int, db):
+        return db.fetch(script="get_participants", params=(game_id,))
 
-    @connected
-    def getGameDuration(self, game_id: int, db, cursor, scripts):
-        return cursor.execute(scripts["get_game_duration"], (game_id,)).fetchall()[0][0]
+    @needsDatabase
+    def getGameDuration(self, game_id: int, db):
+        return db.fetch(script="get_game_duration", params=(game_id,))[0][0]
 
-    @connected
-    def gameEmbed(self, game_id: int, db, cursor, scripts):
+    @needsDatabase
+    def gameEmbed(self, game_id: int, db):
         print(self.getGameDuration(game_id=game_id))
-        embed = Embed(title=f"Partie #{game_id}", color=0xff464a)
+        embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
         embed.add_field(name="#Durée", value=f"{self.getGameDuration(game_id=game_id)}", inline=False)
         embed.add_field(
             name="#Partipants",
-            value="\n".join(
-                [f"- {user[0]}" for user in self.getParticipants(game_id=game_id)]
-            ),
-            inline=False
+            value="\n".join([f"- {user[0]}" for user in self.getParticipants(game_id=game_id)]),
+            inline=False,
         )
         return embed
