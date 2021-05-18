@@ -28,9 +28,11 @@ class Game:
         Returns:
             int: the id of the added game
         """
-        db.update(script="create_game", params=(duration,))
 
-        return db.fetch(script="last_row_id")[0][0]
+        if not duration.isdigit():
+            raise BadTypeArgumentException(arg=duration, requiredType=int)
+
+        return db.update(script="create_game", params=(duration,))
 
     @needsDatabase
     def startGame(self, game_id: int, db):

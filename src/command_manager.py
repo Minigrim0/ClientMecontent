@@ -64,14 +64,11 @@ class CommandManager:
     @log_this_async
     async def newGame(self, args: dict):
         duration = args["command"]["args"][0]
-        if not duration.isdigit():
-            raise BadTypeArgumentException(arg=duration, requiredType=int)
         game_id = Game.getInstance().createGame(duration)
         user_id = User.getInstance().getUserID(args["user"].id)
         Game.getInstance().addUserToGame(user_id, game_id)
 
-        embed = Game.getInstance().gameEmbed(game_id=game_id)
-        await args["channel"].send(embed=embed)
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=str(game_id)))
 
     @require_parameters(1)
     @log_this_async
