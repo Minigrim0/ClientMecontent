@@ -9,8 +9,7 @@ from singleton.settings import Settings
 
 
 class require_role:
-    """A decorator verifying that the user that wrote the command as the rights to execute this command
-    """
+    """A decorator verifying that the user that wrote the command as the rights to execute this command"""
 
     def __init__(self, *authorized_roles):
         self.authorized_roles = [Settings.getInstance()["roles"][role] for role in authorized_roles]
@@ -30,8 +29,7 @@ class require_role:
 
 
 class require_parameters:
-    """A decorator checking that the amount of parameters is correct for the command to work
-    """
+    """A decorator checking that the amount of parameters is correct for the command to work"""
 
     def __init__(self, nb_parameters):
         self.nb_parameters = nb_parameters
@@ -46,14 +44,14 @@ class require_parameters:
                 await func(*args, **kwargs)
             else:
                 await kwargs["args"]["channel"].send(
-                    f"Ta commande n'a pas le bon nombre de paramètres ! (Requis: {self.nb_parameters})")
+                    f"Ta commande n'a pas le bon nombre de paramètres ! (Requis: {self.nb_parameters})"
+                )
 
         return wrapper  # (*args, **kwargs)
 
 
 def log_this_async(func):
-    """A decorator to log eventual errors occuring in the code
-    """
+    """A decorator to log eventual errors occuring in the code"""
 
     async def wrapper(*args, **kwargs):
         try:
@@ -71,8 +69,7 @@ def log_this_async(func):
 
 
 def connected(func):
-    """A decorator wrapping a sql connection to a database
-    """
+    """A decorator wrapping a sql connection to a database"""
 
     def wrapper(*args, **kwargs):
         db = sqlite3.connect(databaseLocation())
