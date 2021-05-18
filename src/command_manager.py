@@ -71,7 +71,7 @@ class CommandManager:
         Game.getInstance().addUserToGame(user_id, game_id)
         participants = Game.getInstance().getParticipants(game_id)
 
-        embed = gameEmbed(gameID=game_id, duration=duration, participants=participants)
+        embed = Game.getInstance().gameEmbed(gameID=game_id, duration=duration, participants=participants)
         await args["channel"].send(embed=embed)
 
     @require_role("player")

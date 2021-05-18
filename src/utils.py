@@ -1,5 +1,3 @@
-from discord import Embed
-
 from singleton.settings import Settings
 
 
@@ -19,10 +17,3 @@ def databaseLocation():
     """Returns the location of the database file
     """
     return Settings.getInstance()["database"]["location"]
-
-
-def gameEmbed(gameID: int, duration: int, participants: list):
-    embed = Embed(title=f"Partie #{gameID}", color=0xff464a)
-    embed.add_field(name="#Durée", value=f"{duration}", inline=False)
-    embed.add_field(name="#Partipants", value="\n".join([f"- {user[0]}" for user in participants]), inline=False)
-    return embed

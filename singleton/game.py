@@ -1,5 +1,6 @@
-from singleton.user import User
+from discord import Embed
 
+from singleton.user import User
 from src.decorators import connected
 
 
@@ -83,3 +84,18 @@ class Game:
     @connected
     def getParticipants(self, game_id: int, db, cursor, scripts):
         return cursor.execute(scripts["get_participants"], (game_id,)).fetchall()
+
+
+    @connected
+    def gameEmbed(self, game_id: int, db, cursor, scripts):
+        print(self.getGameDuration(game_id=game_id))
+        embed = Embed(title=f"Partie #{game_id}", color=0xff464a)
+        embed.add_field(name="#Durée", value=f"{self.getGameDuration(game_id=game_id)}", inline=False)
+        embed.add_field(
+            name="#Partipants",
+            value="\n".join(
+                [f"- {user[0]}" for user in self.getParticipants(game_id=game_id)]
+            ),
+            inline=False
+        )
+        return embed
