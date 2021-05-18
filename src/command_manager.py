@@ -40,12 +40,12 @@ class CommandManager:
             Infos: An dictionnary containing the information
         """
 
-        regex = r"^!([a-zA-Z0-9])+( (([a-zA-Z0-9?!'éèàù\-_])+|(\"([a-zA-Z0-9?!'éèàù\-_ ])+\")))*?$"
+        regex = r"^!([a-zA-Z0-9])+( (([a-zA-Z0-9?!',éèàù\-_])+|(\"([a-zA-Z0-9?!',éèàù\-_ ])+\")))*?$"
         if not re.match(regex, command.content):
             raise BadFormatException(command=command.content, pattern=regex)
 
         splitted = re.findall(
-            r"((?:[a-zA-Z0-9?!'éèàù\-_])+)|\"((?:[a-zA-Z0-9?!'éèàù\-_ ])+)\"",
+            r"((?:[a-zA-Z0-9?!'éèàù\-_])+)|\"((?:[a-zA-Z0-9?!',éèàù\-_ ])+)\"",
             command.content,
         )
 
