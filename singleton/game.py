@@ -85,6 +85,9 @@ class Game:
     def getParticipants(self, game_id: int, db, cursor, scripts):
         return cursor.execute(scripts["get_participants"], (game_id,)).fetchall()
 
+    @connected
+    def getGameDuration(self, game_id: int, db, cursor, scripts):
+        return cursor.execute(scripts["get_game_duration"], (game_id,)).fetchall()[0][0]
 
     @connected
     def gameEmbed(self, game_id: int, db, cursor, scripts):

@@ -11,8 +11,6 @@ from singleton.settings import Settings
 from singleton.game import Game
 from singleton.user import User
 
-from src.utils import gameEmbed
-
 
 class CommandManager:
     def __init__(self, client):
@@ -27,6 +25,7 @@ class CommandManager:
             "score": self.getScore,
             "new": self.newGame,
             "start": self.startGame,
+            "info": self.gameInfo
         }
         self.help = Settings.getInstance()["help"]
 
@@ -73,6 +72,15 @@ class CommandManager:
 
         embed = Game.getInstance().gameEmbed(gameID=game_id, duration=duration, participants=participants)
         await args["channel"].send(embed=embed)
+
+    @require_parameters(1)
+    @log_this_async
+    async def gameInfo(self, args: dict):
+        game_id = args["command"]["args"][0]
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, required_type=int)
+
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
     @require_role("player")
     @require_parameters(1)
