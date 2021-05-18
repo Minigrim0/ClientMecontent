@@ -98,14 +98,7 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def getScore(self, args: dict):
-        score = User.getInstance().getScore(args["user"])
-
-        embed = Embed(title=f"Profil de {args['user'].name}", color=0xFF464A)
-        embed.set_thumbnail(url=args["user"].avatar_url)
-        embed.add_field(name="#score", value=f"{score['score']}", inline=True)
-        embed.add_field(name="#victoires", value=f"{score['victories']}", inline=True)
-        embed.add_field(name="#participations", value=f"{score['participations']}", inline=True)
-        await args["channel"].send(embed=embed)
+        await args["channel"].send(embed=User.getInstance().getScore(args["user"]))
 
     @require_role("editor")
     @log_this_async
