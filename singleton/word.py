@@ -2,7 +2,7 @@ from discord import Embed
 
 from src.decorators import needsDatabase
 
-from singleton.user import User
+from DO.word import WordDO
 
 
 class Word:
@@ -25,8 +25,7 @@ class Word:
         if len(word) > 255:
             raise Exception(f"Le mot ne peut pas être plus long que 255 caractères ! (Actuel : {len(word)})")
 
-        user_id = User.getInstance().getUserID(str(user.id))
-        db.update(script="add_word", params=(word, user_id))
+        WordDO(word=word, user=user).save()
 
     @needsDatabase
     def listWords(self, db):
@@ -42,8 +41,4 @@ class Word:
 
     @needsDatabase
     def delWord(self, word: str, db):
-        exists = db.fetch(script="word_count", params=(word,))[0][0] == 1
-        if exists:
-            db.update(script="del_word", params=(word,))
-
-        return exists
+        return WordDO(word=word).delete()
