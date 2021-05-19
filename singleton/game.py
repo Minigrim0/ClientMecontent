@@ -4,6 +4,7 @@ from src.decorators import needsDatabase
 from src.exceptions import BadTypeArgumentException
 
 from DO.user import UserDO
+from DO.game import GameDO
 
 
 class Game:
@@ -100,6 +101,9 @@ class Game:
     def gameEmbed(self, game_id: str, db):
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, required_type=int)
+
+        game = GameDO(id=int(game_id))
+        game.load()
 
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
         embed.add_field(name="#Durée", value=f"{self.getGameDuration(game_id=game_id)}", inline=False)
