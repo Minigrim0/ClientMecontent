@@ -1,9 +1,9 @@
 from discord import Embed
 
 from src.decorators import needsDatabase
-from singleton.user import User
-
 from src.exceptions import BadTypeArgumentException
+
+from DO.user import UserDO
 
 
 class Game:
@@ -62,9 +62,13 @@ class Game:
             user_id (str): [description]
             game_id (str): [description]
         """
-        if game_id in User.getInstance().getGames(user_id):
+        user = UserDO(id=user_id)
+        user.load()
+
+        if int(game_id) in user.games:
             raise Exception("Tu participe déjà à cette partie !")
-        db.update(script="add_user_to_game", params=(user_id, game_id, 0))
+
+        db.update(script="add_user_to_game", params=(user.id, game_id, 0))
 
     @needsDatabase
     def getParticipants(self, game_id: int, db):
