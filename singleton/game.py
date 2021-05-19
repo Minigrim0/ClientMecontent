@@ -36,7 +36,9 @@ class Game:
         if not duration.isdigit():
             raise BadTypeArgumentException(arg=duration, requiredType=int)
 
-        return db.update(script="create_game", params=(duration,))
+        game = GameDO(duration=duration)
+        game.save()
+        return game.id
 
     def startGame(self, game_id: str):
         """Start the game with the given ID
@@ -93,10 +95,6 @@ class Game:
         db.update(script="remove_user_from_game", params=(user.id, game_id))
 
     @needsDatabase
-    def getParticipants(self, game_id: int, db):
-        return db.fetch(script="get_participants", params=(game_id,))
-
-    @needsDatabase
     def getGameDuration(self, game_id: int, db):
         return db.fetch(script="get_game_duration", params=(game_id,))[0][0]
 
@@ -109,9 +107,10 @@ class Game:
         game.load()
 
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
-        embed.add_field(name="#Durée", value=f"{self.getGameDuration(game_id=game_id)}", inline=False)
+        embed.add_field(name="#Durée", value=f"{game.duration}", inline=True)
+        embed.add_field(name="#Phase", value=f"{game.phase_display}", inline=True)
 
-        participants = "\n".join([f"- {user[0]}" for user in self.getParticipants(game_id=game_id)])
+        participants = "\n".join([f"- {user}" for user in game.participants])
         if participants != "":
             embed.add_field(name="#Partipants", value=participants, inline=False)
         else:
