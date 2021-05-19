@@ -59,6 +59,10 @@ class GameDO:
         parameters += f"Nombre de mots : {self.nb_words}\n"
         return parameters
 
+    @property
+    def words_display(self):
+        return "\n".join([f"- {word}" for word in self.words])
+
     @needsDatabase
     def setWords(self, words, db):
         if self.words != []:
