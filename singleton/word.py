@@ -1,3 +1,4 @@
+import random
 from discord import Embed
 
 from src.decorators import needsDatabase
@@ -41,6 +42,21 @@ class Word:
 
         return embed
 
+    def getRandomWords(self, nb_words: int):
+        words = self.wordList()
+        if nb_words > len(words):
+            raise Exception(
+                f"Il n'y a pas assez de mots dans la liste pour un tirage pareil !\
+                    (Taille du tirage : {nb_words}; nombre de mots : {len(words)})"
+            )
+
+        chosen_words = []
+        for x in range(nb_words):
+            new_word = random.choice(words)
+            chosen_words.append(WordDO(word=new_word[0]).load())
+            del words[words.index(new_word)]
+
+        return chosen_words
 
     def delWord(self, word: str):
         return WordDO(word=word).delete()
