@@ -1,2 +1,2 @@
 -- Creates a game of a certain duration
-INSERT INTO Game (duration) VALUES (?)
+INSERT INTO Game (game_duration) VALUES (?)

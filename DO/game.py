@@ -7,13 +7,18 @@ from src.decorators import needsDatabase
 class GameDO:
     """Handles database fetching and update for game objects"""
 
-    def __init__(self, id=None, phase=0, start_date=None, end_date=None, duration=0):
+    def __init__(
+        self, id=None, phase=0, start_date=None, end_date=None, game_duration=3600, vote_duration=600, nb_words=3
+    ):
         self.id = id
         self.phase = phase
         self.start_date = start_date
         self.end_date = end_date
-        self.duration = duration
+        self.game_duration = game_duration
+        self.vote_duration = vote_duration
+        self.nb_words = nb_words
 
+        self.words = []
         self.participants = []
 
         self.phases = ["enregistrement", "partie en cours", "votes en cours", "partie terminée"]
@@ -56,16 +61,13 @@ class GameDO:
     @needsDatabase
     def save(self, db):
         """Save the game object to the database"""
-        if self.duration is None:
-            raise Exception("Impossible de sauvegarder la partie sans sa durée !")
-
         if self.id is not None:
             db.update(
                 script="upd_game",
-                params=(self.id, self.phase, self.duration),
+                params=(self.id, self.phase, self.game_duration),
             )
         else:
-            self.id = db.update(script="add_game", params=(self.duration,))
+            self.id = db.update(script="add_game", params=(self.game_duration,))
 
     @needsDatabase
     def load(self, db):
@@ -79,10 +81,13 @@ class GameDO:
         self.phase = data[1]
         self.start_date = data[2]
         self.end_date = data[3]
-        self.duration = data[4]
+        self.game_duration = data[4]
+        self.vote_duration = data[5]
+        self.nb_words = data[6]
 
         participants = db.fetch(script="get_participants", params=(self.id,))
         self.participants = [user[0] for user in participants]
+        self.words = [word[0] for word in db.fetch(script="get_game_words", params=(self.id,))]
 
         return self
 

@@ -9,11 +9,13 @@ CREATE TABLE IF NOT EXISTS Users
 
 CREATE TABLE IF NOT EXISTS Game
 (
-    ID         INTEGER PRIMARY KEY AUTOINCREMENT,
-    phase      INTEGER DEFAULT 0, -- Whether the users can register to participate or not
-    start_date TIMESTAMP,  -- The time the game started
-    end_date   TIMESTAMP,  -- The time the game (should) end(ed)
-    duration   INTEGER  -- The duration of the game
+    ID            INTEGER PRIMARY KEY AUTOINCREMENT,
+    phase         INTEGER DEFAULT 0, -- Whether the users can register to participate or not
+    start_date    TIMESTAMP,  -- The time the game started
+    end_date      TIMESTAMP,  -- The time the game (should) end(ed)
+    game_duration INTEGER,  -- The duration of the game
+    vote_duration INTEGER DEFAULT 600,  -- The duration during which the users can vote
+    nb_words      INTEGER DEFAULT 3  -- The number of words for the game
 );
 
 CREATE TABLE IF NOT EXISTS Words
