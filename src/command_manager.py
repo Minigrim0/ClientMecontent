@@ -96,9 +96,9 @@ class CommandManager:
     @log_this_async
     async def startGame(self, args: dict):
         game_id = args["command"]["args"][0]
+        Game.getInstance().startGame(game_id=game_id)
 
-        duration = Game.getInstance().startGame(game_id=game_id)
-        await args["channel"].send(f"La partie #{game_id} vient de démarrer et finira le {duration} !")
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
     @log_this_async
     async def register(self, args: dict):

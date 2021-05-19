@@ -49,15 +49,15 @@ class Game:
             int: the end date of the started game
         """
         if not game_id.isdigit():
-            raise BadTypeArgumentException(arg=game_id, required_type=int)
+            raise BadTypeArgumentException(arg=game_id, requiredType=int)
 
-        game = GameDO(id=game_id)
-        game.load()
+        game = GameDO(id=game_id).load()
 
         if game.phase > 0:  # The game has started
             raise Exception("Cette partie a déjà démarré !")
 
-        game.start()
+        words = Word.getInstance().getRandomWords(game.nb_words)
+        game.start(words=words)
 
         return game.end_date
 
@@ -94,7 +94,7 @@ class Game:
 
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():
-            raise BadTypeArgumentException(arg=game_id, required_type=int)
+            raise BadTypeArgumentException(arg=game_id, requiredType=int)
 
         game = GameDO(id=int(game_id))
         game.load()
