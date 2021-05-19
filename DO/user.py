@@ -27,10 +27,10 @@ class UserDO:
         if self.id is None:
             raise Exception("Impossible de charger un utilisateur sans son id !")
 
-        data = db.fetch(script="get_user", params=(self.id,))[0]
+        data = db.fetch(script="get_user", params=(self.id,))
 
         if len(data) != 0:
-            self.id, self.username, self.score = data
+            self.id, self.username, self.score = data[0]
 
             self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
             self.victories = db.fetch(script="get_user_victories", params=(self.id,))[0][0]
