@@ -52,6 +52,8 @@ class GameDO:
         participants = db.fetch(script="get_participants", params=(self.id,))
         self.participants = [user[0] for user in participants]
 
+        return self
+
     @needsDatabase
     def start(self, db):
         if self.id is None:

@@ -34,5 +34,7 @@ class UserDO:
         self.victories = db.fetch(script="victories", params=(self.id,))[0][0]
         self.participations = db.fetch(script="participations", params=(self.id,))[0][0]
 
+        return self
+
     def delete(self, db):
         pass
