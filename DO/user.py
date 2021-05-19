@@ -9,6 +9,8 @@ class UserDO:
         self.username = username
         self.score = 0
         self.games = []
+        self.victories = 0
+        self.participations = 0
 
     @needsDatabase
     def save(self, db):
@@ -28,8 +30,9 @@ class UserDO:
 
         self.id, self.username, self.score = data
 
-        games = db.fetch(script="get_user_games", params=(self.id,))
-        self.games = [game[0] for game in games]
+        self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
+        self.victories = db.fetch(script="victories", params=(self.id,))[0][0]
+        self.participations = db.fetch(script="participations", params=(self.id,))[0][0]
 
     def delete(self, db):
         pass
