@@ -1,10 +1,11 @@
 from discord import Embed
 
-from src.decorators import needsDatabase
 from src.exceptions import BadTypeArgumentException
 
 from DO.user import UserDO
 from DO.game import GameDO
+
+from singleton.word import Word
 
 
 class Game:
@@ -22,7 +23,7 @@ class Game:
         else:
             Game.instance = self
 
-    def createGame(self, duration: int):
+    def createGame(self, parameters: list):
         """Adds a new game row in the database with the given duration and returns the id of this game
 
         Args:
@@ -32,11 +33,16 @@ class Game:
             int: the id of the added game
         """
 
-        if not duration.isdigit():
-            raise BadTypeArgumentException(arg=duration, requiredType=int)
+        if len(parameters) == 0:
+            game = GameDO()
+            game.save()
+        else:
+            game_duration = parameters[0]
+            if not game_duration.isdigit():
+                raise BadTypeArgumentException(arg=game_duration, requiredType=int)
 
-        game = GameDO(duration=duration)
-        game.save()
+            game = GameDO(game_duration=game_duration)
+            game.save()
         return game.id
 
     def startGame(self, game_id: str):
