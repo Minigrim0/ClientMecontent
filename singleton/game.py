@@ -69,10 +69,11 @@ class Game:
             game_id (str): [description]
         """
         user = UserDO(id=user_id)
+        game = GameDO(id=game_id)
         user.load()
+        game.load()
 
-        if int(game_id) in user.games:
-            raise Exception("Tu participe déjà à cette partie !")
+        game.addOrRemoveUser(user, add=True)
 
     def removeUserFromGame(self, user_id: str, game_id: str):
         """Removes a user from a game
@@ -81,13 +82,10 @@ class Game:
             user_id (str): [description]
             game_id (str): [description]
         """
-        user = UserDO(id=user_id)
-        user.load()
+        user = UserDO(id=user_id).load()
+        game = GameDO(id=game_id).load()
 
-        if int(game_id) not in user.games:
-            raise Exception("Tu ne participe pas à cette partie !")
-
-        db.update(script="remove_user_from_game", params=(user.id, game_id))
+        game.addOrRemoveUser(user, add=False)
 
     def getGameDuration(self, game_id: int):
         game = GameDO(id=game_id)

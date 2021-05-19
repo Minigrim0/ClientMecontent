@@ -61,3 +61,16 @@ class GameDO:
 
         db.update(script="start_game", params=(self.id,))
         self.load()
+
+    @needsDatabase
+    def addOrRemoveUser(self, user, db, add=True):
+        if add:
+            if int(self.id) in user.games:
+                raise Exception("Tu participe déjà à cette partie !")
+
+            db.update(script="add_user_to_game", params=(user.id, self.id, 0))
+        else:
+            if int(self.id) not in user.games:
+                raise Exception("Tu ne participe pas à cette partie !")
+
+            db.update(script="remove_user_from_game", params=(user.id, self.id))
