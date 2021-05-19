@@ -50,6 +50,8 @@ class Game:
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, required_type=int)
 
+        if db.fetch(script="is_game_started", params=(game_id,))[0][0] == 1:
+            raise Exception("Cette partie a déjà démarré !")
         db.update(script="start_game", params=(game_id,))
 
         return db.fetch(script="get_game_end", params=(game_id,))[0][0]
