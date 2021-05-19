@@ -100,8 +100,8 @@ class Game:
         game.load()
 
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
-        embed.add_field(name="#Durée", value=f"{game.duration}", inline=True)
-        embed.add_field(name="#Phase", value=f"{game.phase_display}", inline=True)
+        embed.add_field(name="#Paramètres", value=game.parameters, inline=True)
+        embed.add_field(name="#Phase", value=game.phase_display, inline=False)
         if game.phase > 0:
             embed.add_field(name="#Date de début", value=f"{game.start_date_display}", inline=True)
             embed.add_field(name="#Date de fin", value=f"{game.end_date_display}", inline=True)

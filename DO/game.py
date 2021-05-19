@@ -46,6 +46,13 @@ class GameDO:
             )
         return "$Error$"
 
+    @property
+    def parameters(self):
+        parameters = f"Durée du jeu : {utils.secondsToHMS(self.game_duration)}\n"
+        parameters += f"Durée des votes : {utils.secondsToHMS(self.vote_duration)}\n"
+        parameters += f"Nombre de mots : {self.nb_words}\n"
+        return parameters
+
     @needsDatabase
     def save(self, db):
         """Save the game object to the database"""
