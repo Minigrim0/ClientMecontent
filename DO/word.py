@@ -14,10 +14,7 @@ class WordDO:
             raise Exception("Les champs word et user ne peuvent pas être vide !")
 
         # TODO: Handle SQLErrors
-        if self.id is None:
-            db.update(script="add_word", params=(self.word, self.user))
-        else:
-            db.update(script="upd_word", params=(self.word, self.id))
+        db.update(script="add_word", params=(self.word, self.user.id))
 
     @needsDatabase
     def load(self, db):
