@@ -2,6 +2,7 @@ import pytz
 import datetime
 
 from src.decorators import needsDatabase
+import src.utils as utils
 
 
 class GameDO:
@@ -59,6 +60,15 @@ class GameDO:
         return parameters
 
     @needsDatabase
+    def setWords(self, words, db):
+        if self.words != []:
+            raise Exception("Les mots choisits ne peuvent pas être modifiés !")
+
+        self.words = words
+        for word in self.words:
+            db.update(script="add_word_to_game", params=(word.id, self.id))
+
+    @needsDatabase
     def save(self, db):
         """Save the game object to the database"""
         if self.id is not None:
@@ -92,11 +102,12 @@ class GameDO:
         return self
 
     @needsDatabase
-    def start(self, db):
+    def start(self, words, db):
         if self.id is None:
             raise Exception("Impossible de démarrer une partie sans id !")
 
         db.update(script="start_game", params=(self.id,))
+        self.setWords(words)
         self.load()
 
     @needsDatabase

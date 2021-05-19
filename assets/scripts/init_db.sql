@@ -35,3 +35,12 @@ CREATE TABLE IF NOT EXISTS userToGame
     CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
     PRIMARY KEY (user_id, game_id)
 );
+
+CREATE TABLE IF NOT EXISTS wordToGame
+(
+    word_id INTEGER,
+    game_id INTEGER,
+    CONSTRAINT fk_word FOREIGN KEY (word_id) REFERENCES Words (ID) ON DELETE CASCADE,
+    CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
+    PRIMARY KEY (word_id, game_id)
+);

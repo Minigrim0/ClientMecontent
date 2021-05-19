@@ -1,3 +1,5 @@
+import datetime
+
 from singleton.settings import Settings
 
 
@@ -14,6 +16,11 @@ async def send_error_message(decorator_kwargs, error_msg: str):
 
 
 def databaseLocation():
-    """Returns the location of the database file
-    """
+    """Returns the location of the database file"""
     return Settings.getInstance()["database"]["location"]
+
+
+def secondsToHMS(seconds: int):
+    return str(datetime.timedelta(seconds=seconds))
+
+
