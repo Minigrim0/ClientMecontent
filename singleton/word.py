@@ -32,11 +32,11 @@ class Word:
         return db.fetch(script="list_words")
 
     def wordsEmbed(self):
-        words = self.wordList
+        words = self.wordList()
 
         embed = Embed(title="Liste de mots", color=0xFF464A)
         for word, user in words:
-            embed.add_field(name=word, value=user, inline=False)
+            embed.add_field(name=word, value=user, inline=True)
         if len(words) == 0:
             embed.add_field(name="plutôt vide", value="meh", inline=False)
 
