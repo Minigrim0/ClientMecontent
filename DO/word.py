@@ -19,12 +19,15 @@ class WordDO:
     @needsDatabase
     def load(self, db):
         """Loads a word object from the database"""
-        if self.id is None:
-            raise Exception("Impossible de charger un mot sans son id !")
+        if self.id is None and self.word is None:
+            raise Exception("Impossible de charger un mot sans son id ni sa valeur !")
 
         # TODO: Handle SQLErrors
-        data = db.fetch(script="get_word", params=(self.id,))
-        print(data)
+        id = self.id if self.id is not None else -1
+        word = self.word if self.word is not None else ""
+        self.id, self.word, self.user = db.fetch(script="get_word", params=(id, word))[0]
+
+        return self
 
     @needsDatabase
     def delete(self, db):

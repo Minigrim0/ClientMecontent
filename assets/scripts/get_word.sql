@@ -1,2 +1,2 @@
 -- Returns information about the word with the given ID
-SELECT word, user FROM Words WHERE id = ?
+SELECT * FROM Words WHERE id = ? OR word = ?

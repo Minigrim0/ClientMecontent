@@ -20,16 +20,18 @@ class Word:
         else:
             Word.instance = self
 
-    @needsDatabase
-    def addWord(self, word: str, user, db):
+    def addWord(self, word: str, user):
         if len(word) > 255:
             raise Exception(f"Le mot ne peut pas être plus long que 255 caractères ! (Actuel : {len(word)})")
 
         WordDO(word=word, user=user).save()
 
     @needsDatabase
-    def listWords(self, db):
-        words = db.fetch(script="list_words")
+    def wordList(self, db):
+        return db.fetch(script="list_words")
+
+    def wordsEmbed(self):
+        words = self.wordList
 
         embed = Embed(title="Liste de mots", color=0xFF464A)
         for word, user in words:
@@ -39,6 +41,6 @@ class Word:
 
         return embed
 
-    @needsDatabase
-    def delWord(self, word: str, db):
+
+    def delWord(self, word: str):
         return WordDO(word=word).delete()
