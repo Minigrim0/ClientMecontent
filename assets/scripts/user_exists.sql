@@ -9,4 +9,4 @@ SELECT
 FROM
     Users
 WHERE
-    discord_id = ?
+    id = ?

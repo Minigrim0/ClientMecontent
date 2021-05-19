@@ -1,1 +1,1 @@
-INSERT INTO Users (username, discord_id, score) VALUES (?, ?, ?)
+INSERT INTO Users (id, username, score) VALUES (?, ?, ?)
