@@ -65,8 +65,7 @@ class CommandManager:
     @require_parameters(1)
     @log_this_async
     async def newGame(self, args: dict):
-        duration = args["command"]["args"][0]
-        game_id = Game.getInstance().createGame(duration)
+        game_id = Game.getInstance().createGame(args["command"]["args"][0])
         Game.getInstance().addUserToGame(args["user"].id, game_id)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=str(game_id)))
@@ -74,9 +73,7 @@ class CommandManager:
     @require_parameters(1)
     @log_this_async
     async def gameInfo(self, args: dict):
-        game_id = args["command"]["args"][0]
-
-        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=args["command"]["args"][0]))
 
     @require_parameters(1)
     @log_this_async

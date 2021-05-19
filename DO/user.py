@@ -33,8 +33,8 @@ class UserDO:
             self.id, self.username, self.score = data
 
             self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
-            self.victories = db.fetch(script="victories", params=(self.id,))[0][0]
-            self.participations = db.fetch(script="participations", params=(self.id,))[0][0]
+            self.victories = db.fetch(script="get_user_victories", params=(self.id,))[0][0]
+            self.participations = db.fetch(script="get_user_participations", params=(self.id,))[0][0]
 
         return self
 
