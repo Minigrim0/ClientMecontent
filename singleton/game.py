@@ -22,8 +22,7 @@ class Game:
         else:
             Game.instance = self
 
-    @needsDatabase
-    def createGame(self, duration: int, db):
+    def createGame(self, duration: int):
         """Adds a new game row in the database with the given duration and returns the id of this game
 
         Args:
@@ -62,8 +61,7 @@ class Game:
 
         return game.end_date
 
-    @needsDatabase
-    def addUserToGame(self, user_id: str, game_id: str, db):
+    def addUserToGame(self, user_id: str, game_id: str):
         """Add a user to a game
 
         Args:
@@ -76,10 +74,7 @@ class Game:
         if int(game_id) in user.games:
             raise Exception("Tu participe déjà à cette partie !")
 
-        db.update(script="add_user_to_game", params=(user.id, game_id, 0))
-
-    @needsDatabase
-    def removeUserFromGame(self, user_id: str, game_id: str, db):
+    def removeUserFromGame(self, user_id: str, game_id: str):
         """Removes a user from a game
 
         Args:
@@ -94,12 +89,12 @@ class Game:
 
         db.update(script="remove_user_from_game", params=(user.id, game_id))
 
-    @needsDatabase
-    def getGameDuration(self, game_id: int, db):
-        return db.fetch(script="get_game_duration", params=(game_id,))[0][0]
+    def getGameDuration(self, game_id: int):
+        game = GameDO(id=game_id)
+        game.load()
+        return game.duration
 
-    @needsDatabase
-    def gameEmbed(self, game_id: str, db):
+    def gameEmbed(self, game_id: str):
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, required_type=int)
 
