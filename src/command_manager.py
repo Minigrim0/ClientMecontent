@@ -127,7 +127,7 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def listWord(self, args: dict):
-        listEmbed = Word.getInstance().listWords()
+        listEmbed = Word.getInstance().wordsEmbed()
 
         await args["channel"].send(embed=listEmbed)
 
