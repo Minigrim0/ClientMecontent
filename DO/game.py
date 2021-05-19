@@ -38,6 +38,13 @@ class GameDO:
         data = db.fetch(script="get_game", params=(self.id,))[0]
 
         self.id = data[0]
+        self.phase = data[1]
+        self.start_date = data[2]
+        self.end_date = data[3]
+        self.duration = data[4]
+
+        participants = db.fetch(script="get_participants", params=(self.id,))
+        self.participants = [user[0] for user in participants]
 
     @needsDatabase
     def start(self, db):
