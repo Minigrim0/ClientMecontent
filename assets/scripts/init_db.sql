@@ -28,9 +28,10 @@ CREATE TABLE IF NOT EXISTS Words
 
 CREATE TABLE IF NOT EXISTS userToGame
 (
-    user_id INTEGER,
-    game_id INTEGER,
-    votes   INTEGER,
+    user_id    INTEGER,
+    game_id    INTEGER,
+    votes      INTEGER,
+    submission CHAR(255),  -- The url where the image has been posted
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Users (ID) ON DELETE CASCADE,
     CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
     PRIMARY KEY (user_id, game_id)
