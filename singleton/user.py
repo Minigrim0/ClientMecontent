@@ -1,6 +1,4 @@
-from discord import Embed
-
-from src.decorators import needsDatabase
+from discord import Embed, Member
 
 from DO.user import UserDO
 
@@ -20,17 +18,11 @@ class User:
         else:
             User.instance = self
 
-    @needsDatabase
-    def getUserID(self, discordID: str, db):
-        return db.fetch(script="get_user_id", params=(discordID,))[0][0]
+    def addUser(self, user: Member):
+        UserDO(id=user.id, username=user.name).save()
 
-    @needsDatabase
-    def addUser(self, user, db):
-        return db.update(script="add_user", params=(user.id, user.name, 0))
-
-    @needsDatabase
-    def exists(self, user, db):
-        return db.fetch(script="user_exists", params=(user.id,))[0][0]
+    def exists(self, user: Member):
+        return UserDO(id=user.id).load().username != None
 
     def getScore(self, discord_user):
         user = UserDO(id=discord_user.id)
