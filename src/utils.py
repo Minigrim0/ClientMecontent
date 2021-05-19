@@ -24,3 +24,10 @@ def secondsToHMS(seconds: int):
     return str(datetime.timedelta(seconds=seconds))
 
 
+def getDiffElements(initialList: list, newList: list):
+    final = []
+    for element in newList:
+        if element not in initialList:
+            final.append(element)
+
+    return final
