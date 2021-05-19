@@ -32,18 +32,14 @@ class User:
     def exists(self, user, db):
         return db.fetch(script="user_exists", params=(user.id,))[0][0]
 
-    @needsDatabase
-    def getScore(self, discord_user, db):
+    def getScore(self, discord_user):
         user = UserDO(id=discord_user.id)
         user.load()
-
-        victories = db.fetch(script="victories", params=(user.id,))[0][0]
-        participations = db.fetch(script="participations", params=(user.id,))[0][0]
 
         embed = Embed(title=f"Profil de {user.username}", color=0xFF464A)
         embed.set_thumbnail(url=discord_user.avatar_url)
         embed.add_field(name="#score", value=f"{user.score}", inline=True)
-        embed.add_field(name="#victoires", value=f"{victories}", inline=True)
-        embed.add_field(name="#participations", value=f"{participations}", inline=True)
+        embed.add_field(name="#victoires", value=f"{user.victories}", inline=True)
+        embed.add_field(name="#participations", value=f"{user.participations}", inline=True)
 
         return embed
