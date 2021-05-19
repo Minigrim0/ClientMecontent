@@ -38,8 +38,7 @@ class Game:
 
         return db.update(script="create_game", params=(duration,))
 
-    @needsDatabase
-    def startGame(self, game_id: str, db):
+    def startGame(self, game_id: str):
         """Start the game with the given ID
 
         Args:
@@ -51,11 +50,15 @@ class Game:
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, required_type=int)
 
-        if db.fetch(script="is_game_started", params=(game_id,))[0][0] == 1:
-            raise Exception("Cette partie a déjà démarré !")
-        db.update(script="start_game", params=(game_id,))
+        game = GameDO(id=game_id)
+        game.load()
 
-        return db.fetch(script="get_game_end", params=(game_id,))[0][0]
+        if game.phase > 0:  # The game has started
+            raise Exception("Cette partie a déjà démarré !")
+
+        game.start()
+
+        return game.end_date
 
     @needsDatabase
     def addUserToGame(self, user_id: str, game_id: str, db):

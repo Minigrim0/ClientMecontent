@@ -38,8 +38,11 @@ class GameDO:
         data = db.fetch(script="get_game", params=(self.id,))[0]
 
         self.id = data[0]
-        self.registration_phase = data[1]
-        self.finished = data[2]
-        self.start_date = data[3]
-        self.end_date = data[4]
-        self.duration = data[5]
+
+    @needsDatabase
+    def start(self, db):
+        if self.id is None:
+            raise Exception("Impossible de démarrer une partie sans id !")
+
+        db.update(script="start_game", params=(self.id,))
+        self.load()
