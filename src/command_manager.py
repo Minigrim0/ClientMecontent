@@ -65,8 +65,7 @@ class CommandManager:
     async def newGame(self, args: dict):
         duration = args["command"]["args"][0]
         game_id = Game.getInstance().createGame(duration)
-        user_id = User.getInstance().getUserID(args["user"].id)
-        Game.getInstance().addUserToGame(user_id, game_id)
+        Game.getInstance().addUserToGame(args["user"].id, game_id)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=str(game_id)))
 
