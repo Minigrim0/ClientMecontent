@@ -15,6 +15,12 @@ class GameDO:
 
         self.phases = ["enregistrement", "partie en cours", "votes en cours", "partie terminée"]
 
+    @property
+    def phase_display(self):
+        if 0 <= self.phase < len(self.phases):
+            return self.phases[self.phase]
+        return "$Error$"
+
     @needsDatabase
     def save(self, db):
         """Save the game object to the database"""
