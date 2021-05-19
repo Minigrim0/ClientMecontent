@@ -1,3 +1,6 @@
+import pytz
+import datetime
+
 from src.decorators import needsDatabase
 
 
@@ -19,6 +22,28 @@ class GameDO:
     def phase_display(self):
         if 0 <= self.phase < len(self.phases):
             return self.phases[self.phase]
+        return "$Error$"
+
+    @property
+    def start_date_display(self):
+        if self.start_date is not None:
+            return (
+                datetime.datetime.strptime(self.start_date, "%Y-%m-%d %H:%M:%S")
+                .replace(tzinfo=pytz.utc)
+                .astimezone(tz=pytz.timezone("Europe/Brussels"))
+                .strftime("%d-%m-%Y %H:%M:%S")
+            )
+        return "$Error$"
+
+    @property
+    def end_date_display(self):
+        if self.end_date is not None:
+            return (
+                datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S")
+                .replace(tzinfo=pytz.utc)
+                .astimezone(tz=pytz.timezone("Europe/Brussels"))
+                .strftime("%d-%m-%Y %H:%M:%S")
+            )
         return "$Error$"
 
     @needsDatabase
