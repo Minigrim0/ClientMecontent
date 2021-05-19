@@ -15,7 +15,7 @@ FROM
             game_id=Game.id
         )
     WHERE
-        Game.finished = true
+        Game.phase = 3
     )
 WHERE
     winner_id = ?
