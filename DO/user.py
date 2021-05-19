@@ -18,6 +18,7 @@ class UserDO:
         if self.id is None:
             raise Exception("Le champ id ne peut pas être vide")
 
+        # TODO: Handle SQLErrors
         self.id = db.update(script="add_user", params=(self.id, self.username, self.score))
 
     @needsDatabase
@@ -28,11 +29,12 @@ class UserDO:
 
         data = db.fetch(script="get_user", params=(self.id,))[0]
 
-        self.id, self.username, self.score = data
+        if len(data) != 0:
+            self.id, self.username, self.score = data
 
-        self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
-        self.victories = db.fetch(script="victories", params=(self.id,))[0][0]
-        self.participations = db.fetch(script="participations", params=(self.id,))[0][0]
+            self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
+            self.victories = db.fetch(script="victories", params=(self.id,))[0][0]
+            self.participations = db.fetch(script="participations", params=(self.id,))[0][0]
 
         return self
 
