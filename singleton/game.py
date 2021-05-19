@@ -107,11 +107,11 @@ class Game:
 
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
         embed.add_field(name="#Paramètres", value=game.parameters, inline=True)
-        embed.add_field(name="#Phase", value=game.phase_display, inline=False)
+        embed.add_field(name="#Phase", value=game.phase_display, inline=True)
         if game.phase > 0:
+            embed.add_field(name="#Mots choisits", value=game.words_display, inline=True)
             embed.add_field(name="#Date de début", value=game.start_date_display, inline=True)
             embed.add_field(name="#Date de fin", value=game.end_date_display, inline=True)
-            embed.add_field(name="#Mots choisits", value=game.words, inline=True)
 
         participants = "\n".join([f"- {user}" for user in game.participants])
         if participants != "":
