@@ -73,6 +73,22 @@ class Game:
         db.update(script="add_user_to_game", params=(user.id, game_id, 0))
 
     @needsDatabase
+    def removeUserFromGame(self, user_id: str, game_id: str, db):
+        """Removes a user from a game
+
+        Args:
+            user_id (str): [description]
+            game_id (str): [description]
+        """
+        user = UserDO(id=user_id)
+        user.load()
+
+        if int(game_id) not in user.games:
+            raise Exception("Tu ne participe pas à cette partie !")
+
+        db.update(script="remove_user_from_game", params=(user.id, game_id))
+
+    @needsDatabase
     def getParticipants(self, game_id: int, db):
         return db.fetch(script="get_participants", params=(game_id,))
 

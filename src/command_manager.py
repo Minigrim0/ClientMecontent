@@ -26,6 +26,8 @@ class CommandManager:
             "score": self.getScore,
             "new": self.newGame,
             "start": self.startGame,
+            "join": self.joinGame,
+            "leave": self.leaveGame,
             "info": self.gameInfo,
         }
         self.help = Settings.getInstance()["help"]
@@ -73,6 +75,22 @@ class CommandManager:
     @log_this_async
     async def gameInfo(self, args: dict):
         game_id = args["command"]["args"][0]
+
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
+
+    @require_parameters(1)
+    @log_this_async
+    async def joinGame(self, args: dict):
+        game_id = args["command"]["args"][0]
+        Game.getInstance().addUserToGame(args["user"].id, game_id)
+
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
+
+    @require_parameters(1)
+    @log_this_async
+    async def leaveGame(self, args: dict):
+        game_id = args["command"]["args"][0]
+        Game.getInstance().removeUserFromGame(args["user"].id, game_id)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
