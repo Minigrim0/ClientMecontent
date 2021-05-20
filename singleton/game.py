@@ -112,10 +112,8 @@ class Game:
             user_id (str): [description]
             game_id (str): [description]
         """
-        user = UserDO(id=user_id)
-        game = GameDO(id=game_id)
-        user.load()
-        game.load()
+        user = UserDO(id=user_id).load()
+        game = GameDO(id=game_id).load()
 
         game.addOrRemoveUser(user, add=True)
 
@@ -132,16 +130,14 @@ class Game:
         game.addOrRemoveUser(user, add=False)
 
     def getGameDuration(self, game_id: int):
-        game = GameDO(id=game_id)
-        game.load()
+        game = GameDO(id=game_id).load()
         return game.duration
 
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, requiredType=int)
 
-        game = GameDO(id=int(game_id))
-        game.load()
+        game = GameDO(id=int(game_id)).load()
 
         embed = Embed(title=f"Partie #{game_id}", color=0xFF464A)
         embed.add_field(name="#Paramètres", value=game.parameters, inline=True)
