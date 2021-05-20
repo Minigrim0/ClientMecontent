@@ -3,6 +3,7 @@ import emoji
 import datetime
 
 from src.decorators import needsDatabase
+from src.exceptions import BadTypeArgumentException
 import src.utils as utils
 
 from DO.user import UserDO
@@ -168,3 +169,20 @@ class GameDO:
             db.update(script="remove_user_from_game", params=(user.id, self.id))
 
             self.load()
+
+    @needsDatabase
+    def modTime(self, value, db, game=True):
+        if self.phase > 0:
+            raise Exception("Il n'est plus possible de modifier les paramètres cette partie !")
+
+        if not value.isdigit():
+            raise BadTypeArgumentException("caractères", requiredType="nombre")
+
+        params = (value, self.id)
+        if game:
+            script = "upd_game_duration"
+        else:
+            script = "upd_vote_duration"
+
+        db.update(script=script, params=params)
+        self.load()
