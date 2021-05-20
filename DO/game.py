@@ -27,7 +27,7 @@ class GameDO:
         self.words = []
         self.participants = []
 
-        self.phases = ["enregistrement", "partie en cours", "votes en cours", "partie terminée"]
+        self.phases = ["Enregistrement", "En cours", "Votes en cours", "Partie terminée"]
 
     @property
     def phase_display(self):
