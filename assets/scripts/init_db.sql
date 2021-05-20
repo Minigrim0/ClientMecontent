@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS userToGame
     game_id    INTEGER,
     votes      INTEGER,
     submission CHAR(255),  -- The url where the image has been posted
+    is_host    BOOLEAN DEFAULT false,  -- Whether the user is host of the game or not (Can or cannot change parameters)
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Users (ID) ON DELETE CASCADE,
     CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
     PRIMARY KEY (user_id, game_id)
