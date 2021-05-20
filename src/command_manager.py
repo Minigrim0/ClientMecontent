@@ -64,8 +64,7 @@ class CommandManager:
     @require_role("player")
     @log_this_async
     async def newGame(self, args: dict):
-        game_id = Game.getInstance().createGame(args["command"]["args"])
-        Game.getInstance().addUserToGame(args["user"].id, game_id)
+        game_id = Game.getInstance().createGame(args["command"]["args"], args["user"].id)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=str(game_id)))
 

@@ -23,7 +23,7 @@ class Game:
         else:
             Game.instance = self
 
-    def createGame(self, parameters: list):
+    def createGame(self, parameters: list, user_id):
         """Adds a new game row in the database with the given duration and returns the id of this game
 
         Args:
@@ -35,14 +35,18 @@ class Game:
 
         if len(parameters) == 0:
             game = GameDO()
-            game.save()
+            game.save(reload=False)
         else:
             game_duration = parameters[0]
             if not game_duration.isdigit():
                 raise BadTypeArgumentException(arg=game_duration, requiredType=int)
 
             game = GameDO(game_duration=game_duration)
-            game.save()
+            game.save(reload=False)
+
+        user = UserDO(id=user_id).load()
+        game.addOrRemoveUser(user, add=True)
+        game.setHost(user)
         return game.id
 
     def startGame(self, game_id: str):
