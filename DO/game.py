@@ -183,3 +183,14 @@ class GameDO:
 
         db.update(script=script, params=params)
         self.load()
+
+    @needsDatabase
+    def modWordsAmount(self, value: int, db):
+        if self.phase > 0:
+            raise Exception("Il n'est plus possible de modifier les paramètres cette partie !")
+
+        if value < 1:
+            raise Exception("Les parties doivent avoir minimum un mot !")
+        else:
+            db.update(script="upd_word_amount", params=(value, self.id))
+        self.load()

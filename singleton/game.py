@@ -111,6 +111,12 @@ class Game:
 
         game.modDuration(value, gameDuration=(field == "game_duration"))
 
+    def modWords(self, game, value):
+        if not value.isdigit():
+            raise BadTypeArgumentException("caractères", requiredType="nombre")
+
+        game.modWordsAmount(int(value))
+
     def addUserToGame(self, user_id: str, game_id: str):
         """Add a user to a game
 
