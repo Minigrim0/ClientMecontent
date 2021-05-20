@@ -113,10 +113,6 @@ class Game:
             embed.add_field(name="#Date de début", value=game.start_date_display, inline=True)
             embed.add_field(name="#Date de fin", value=game.end_date_display, inline=True)
 
-        participants = "\n".join([f"- {user}" for user in game.participants])
-        if participants != "":
-            embed.add_field(name="#Partipants", value=participants, inline=False)
-        else:
-            embed.add_field(name="#Partipants", value="personne lel", inline=False)
+        embed.add_field(name="#Partipants", value=game.participants_display, inline=False)
 
         return embed

@@ -1,8 +1,11 @@
 import pytz
+import emoji
 import datetime
 
 from src.decorators import needsDatabase
 import src.utils as utils
+
+from DO.user import UserDO
 
 
 class GameDO:
@@ -63,6 +66,16 @@ class GameDO:
     @property
     def words_display(self):
         return "\n".join([f"- {word}" for word in self.words])
+
+    @property
+    def participants_display(self):
+        display = ""
+        for user in self.participants:
+            display += f"- {user[0]}"
+            if user[1] == self.host:
+                display += f" {emoji.emojize(':crown:')}"
+            display += "\n"
+        return display
 
     @needsDatabase
     def setWords(self, words, db):
