@@ -29,6 +29,7 @@ class CommandManager:
             "join": self.joinGame,
             "leave": self.leaveGame,
             "info": self.gameInfo,
+            "mod": self.modGame,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -80,6 +81,12 @@ class CommandManager:
         Game.getInstance().addUserToGame(args["user"].id, game_id)
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
+
+    @require_parameters(3)
+    @log_this_async
+    async def modGame(self, args: dict):
+        game_id, field, value = args["command"]["args"]
+        Game.getInstance().modGame(game_id, args["user"].id, field, value)
 
     @require_parameters(1)
     @log_this_async
