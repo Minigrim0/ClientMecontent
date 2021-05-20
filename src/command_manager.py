@@ -88,6 +88,8 @@ class CommandManager:
         game_id, field, value = args["command"]["args"]
         Game.getInstance().modGame(game_id, args["user"].id, field, value)
 
+        await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
+
     @require_parameters(1)
     @log_this_async
     async def leaveGame(self, args: dict):
