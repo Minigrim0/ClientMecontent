@@ -38,9 +38,9 @@ class require_parameters:
         func = args[0]
 
         async def wrapper(*args, **kwargs):
-            args = kwargs["args"]["command"]["args"]
+            arguments = kwargs["args"]["command"]["args"]
 
-            if len(args) == self.nb_parameters:
+            if len(arguments) == self.nb_parameters:
                 await func(*args, **kwargs)
             else:
                 await kwargs["args"]["channel"].send(
