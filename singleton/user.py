@@ -22,7 +22,7 @@ class User:
         UserDO(id=user.id, username=user.name).save()
 
     def exists(self, user: Member):
-        return UserDO(id=user.id).load().username != None
+        return UserDO(id=user.id).load().username is not None
 
     def getScore(self, discord_user):
         user = UserDO(id=discord_user.id)
