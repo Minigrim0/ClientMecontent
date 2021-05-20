@@ -18,6 +18,7 @@ class GameDO:
         self.game_duration = game_duration
         self.vote_duration = vote_duration
         self.nb_words = nb_words
+        self.host = None
 
         self.words = []
         self.participants = []
@@ -73,7 +74,7 @@ class GameDO:
             db.update(script="add_word_to_game", params=(word.id, self.id))
 
     @needsDatabase
-    def save(self, db):
+    def save(self, db, reload=True):
         """Save the game object to the database"""
         if self.id is not None:
             db.update(
@@ -82,6 +83,8 @@ class GameDO:
             )
         else:
             self.id = db.update(script="add_game", params=(self.game_duration,))
+        if reload:
+            self.load()
 
     @needsDatabase
     def load(self, db):
@@ -105,6 +108,11 @@ class GameDO:
             raise Exception(f"Tous les joueurs ont quitté la partie #{self.id}. Supression...")
 
         self.words = [word[0] for word in db.fetch(script="get_game_words", params=(self.id,))]
+        host = db.fetch(script="get_game_host", params=(self.id,))
+        if len(host) == 0:  # Set a user host if no user is host
+            self.setHost(UserDO(id=self.participants[0][1]))
+        else:
+            self.host = host[0][0]
 
         return self
 
@@ -114,6 +122,12 @@ class GameDO:
             raise Exception("Impossible de supprimer une partie sans son id !")
 
         db.update(script="del_game", params=(self.id,))
+
+    @needsDatabase
+    def setHost(self, user, db):
+        db.update(script="del_game_hosts", params=(self.id,))
+        db.update(script="add_game_host", params=(self.id, user.id))
+        self.host = user.id
 
     @needsDatabase
     def start(self, words, db):
@@ -136,3 +150,5 @@ class GameDO:
                 raise Exception("Tu ne participe pas à cette partie !")
 
             db.update(script="remove_user_from_game", params=(user.id, self.id))
+
+            self.load()
