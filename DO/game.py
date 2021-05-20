@@ -99,11 +99,21 @@ class GameDO:
         self.vote_duration = data[5]
         self.nb_words = data[6]
 
-        participants = db.fetch(script="get_participants", params=(self.id,))
-        self.participants = [user[0] for user in participants]
+        self.participants = db.fetch(script="get_participants", params=(self.id,))
+        if len(self.participants) == 0:
+            self.delete()
+            raise Exception(f"Tous les joueurs ont quitté la partie #{self.id}. Supression...")
+
         self.words = [word[0] for word in db.fetch(script="get_game_words", params=(self.id,))]
 
         return self
+
+    @needsDatabase
+    def delete(self, db):
+        if self.id is None:
+            raise Exception("Impossible de supprimer une partie sans son id !")
+
+        db.update(script="del_game", params=(self.id,))
 
     @needsDatabase
     def start(self, words, db):
