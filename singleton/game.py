@@ -105,6 +105,12 @@ class Game:
 
         game.setHost(user)
 
+    def modDuration(self, game, field, value):
+        if not value.isdigit():
+            raise BadTypeArgumentException("caractères", requiredType="nombre")
+
+        game.modDuration(value, gameDuration=(field == "game_duration"))
+
     def addUserToGame(self, user_id: str, game_id: str):
         """Add a user to a game
 

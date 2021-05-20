@@ -171,15 +171,12 @@ class GameDO:
             self.load()
 
     @needsDatabase
-    def modTime(self, value, db, game=True):
+    def modDuration(self, value, db, gameDuration=True):
         if self.phase > 0:
             raise Exception("Il n'est plus possible de modifier les paramètres cette partie !")
 
-        if not value.isdigit():
-            raise BadTypeArgumentException("caractères", requiredType="nombre")
-
         params = (value, self.id)
-        if game:
+        if gameDuration:
             script = "upd_game_duration"
         else:
             script = "upd_vote_duration"
