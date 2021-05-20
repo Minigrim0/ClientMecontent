@@ -1,6 +1,11 @@
 from discord import Embed
 
-from src.exceptions import BadTypeArgumentException
+from src.exceptions import (
+    BadTypeArgumentException,
+    InvalidFieldException,
+    InvalidArgumentException,
+    IllegalUserException,
+)
 
 from DO.user import UserDO
 from DO.game import GameDO
@@ -70,6 +75,35 @@ class Game:
         game.start(words=words)
 
         return game.end_date
+
+    def modGame(self, game_id: str, user_id: int, field: str, value):
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, requiredType=int)
+        game = GameDO(id=int(game_id)).load()
+        if user_id != game.host:
+            raise PermissionError()
+
+        fields = ["host", "game_duration", "vote_duration", "nb_words"]
+        if field not in fields:
+            raise InvalidFieldException(field, possibleFields=fields)
+
+        if field == "host":
+            self.modHost(game, value)
+        elif field == "nb_words":
+            self.modWords(game, value)
+        else:
+            self.modDuration(game, field, value)
+
+    def modHost(self, game: GameDO, user: str):
+        user_id = user.replace("<", "").replace(">", "").replace("@", "")
+        if not user_id.isdigit():
+            raise InvalidArgumentException(user, "mention d'un utilisateur")
+
+        user = UserDO(id=user_id).load()
+        if game.id not in user.games:
+            raise IllegalUserException(user_id, game.id)
+
+        game.setHost(user)
 
     def addUserToGame(self, user_id: str, game_id: str):
         """Add a user to a game
