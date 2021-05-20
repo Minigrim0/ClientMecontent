@@ -153,6 +153,9 @@ class GameDO:
 
     @needsDatabase
     def addOrRemoveUser(self, user, db, add=True):
+        if self.phase > 0:
+            raise Exception("Il n'est plus possible de joindre ou quitter cette partie !")
+
         if add:
             if int(self.id) in user.games:
                 raise Exception("Tu participe déjà à cette partie !")
