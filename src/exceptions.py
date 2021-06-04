@@ -3,7 +3,7 @@ class CommandNotFoundException(Exception):
         self.command = command
 
     def __str__(self):
-        return f"the command '{self.command}' could not be found, type !help for help"
+        return f"La commande '{self.command}' n'a pas pu être trouvée, tapez !help pour avoir de l'aide"
 
 
 class BadFormatException(Exception):
@@ -12,7 +12,7 @@ class BadFormatException(Exception):
         self.pattern = pattern
 
     def __str__(self):
-        return f"the command '{self.command}' does not follow the pattern '{self.pattern}'"
+        return f"La commande '{self.command}' ne suit pas le pattern '{self.pattern}'"
 
 
 class BadTypeArgumentException(Exception):
