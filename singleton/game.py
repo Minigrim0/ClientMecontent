@@ -167,7 +167,8 @@ class Game:
         return game.duration
 
     def submit(self, game_id: str, user_id: str, artwork_url: str, artwork_title: str):
-        pass
+        game = GameDO(id=int(game_id)).load()
+        game.addSubmission(user_id, artwork_title, artwork_url)
 
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():

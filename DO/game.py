@@ -131,6 +131,11 @@ class GameDO:
         return self
 
     @needsDatabase
+    def addSubmission(self, user_id: str, artwork_title: str, artwork_url: str, db):
+        artwork_id = db.update(script="add_artwork", params=(artwork_title, artwork_url))
+        db.update(script="upd_artwork_submission", params=(artwork_id, user_id, self.id))
+
+    @needsDatabase
     def delete(self, db):
         if self.id is None:
             raise Exception("Impossible de supprimer une partie sans son id !")
