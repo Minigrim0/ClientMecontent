@@ -136,8 +136,16 @@ class GameDO:
 
     @needsDatabase
     def addSubmission(self, user_id: str, artwork_title: str, artwork_url: str, db):
+        if self.user_submitted(user_id):
+            raise Exception("Vous avez déjà soumis votre oeuvre pour cette partie")
         artwork_id = db.update(script="add_artwork", params=(artwork_title, artwork_url))
         db.update(script="upd_artwork_submission", params=(artwork_id, user_id, self.id))
+
+    def user_submitted(self, user_id):
+        for artwork in self.artworks:
+            if user_id == artwork.user_id:
+                return True
+        return False
 
     @needsDatabase
     def delete(self, db):
