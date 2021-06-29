@@ -26,15 +26,23 @@ CREATE TABLE IF NOT EXISTS Words
     CONSTRAINT fk_user FOREIGN KEY (creator_id) REFERENCES Users (ID) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS Artwork
+(
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    title CHAR(255),
+    url CHAR(512)
+);
+
 CREATE TABLE IF NOT EXISTS userToGame
 (
     user_id    INTEGER,
     game_id    INTEGER,
     votes      INTEGER,
-    submission CHAR(255),  -- The url where the image has been posted
+    artwork_id INTEGER,  -- The url where the image has been posted
     is_host    BOOLEAN DEFAULT false,  -- Whether the user is host of the game or not (Can or cannot change parameters)
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Users (ID) ON DELETE CASCADE,
     CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE,
+    CONSTRAINT fk_artwork FOREIGN KEY (artwork_id) REFERENCES Artwork (ID) ON DELETE CASCADE,
     PRIMARY KEY (user_id, game_id)
 );
 
