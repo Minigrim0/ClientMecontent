@@ -36,6 +36,9 @@ class Database:
 
         Args:
             script (str): the name of the script to execute
+
+        Returns:
+            int: the id of the newly inserted_row
         """
         print("Executing UPDATE :\n", scripts[script], "\nwith parameters", params)
         cursor.execute(scripts[script], params)
