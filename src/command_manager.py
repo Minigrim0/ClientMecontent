@@ -5,7 +5,7 @@ from discord import Embed
 from discord.utils import get
 
 from src.decorators import log_this_async, require_role, require_parameters
-from src.exceptions import CommandNotFoundException, BadFormatException
+from src.exceptions import CommandNotFoundException, BadFormatException, IllegalPlaceException
 
 from singleton.settings import Settings
 from singleton.game import Game
@@ -30,6 +30,7 @@ class CommandManager:
             "leave": self.leaveGame,
             "info": self.gameInfo,
             "mod": self.modGame,
+            "submit": self.submit
         }
         self.help = Settings.getInstance()["help"]
 
@@ -60,7 +61,18 @@ class CommandManager:
             "guild": command.guild,
             "channel": command.channel,
             "command": command_dict,
+            "initial_command": command
         }
+
+    @require_parameters(1)
+    @log_this_async
+    async def submit(self, args):
+        if args["guild"] is not None:
+            await args["initial_command"].delete()
+            raise IllegalPlaceException()
+        game_id = args["command"]["args"][0]
+
+        await args["channel"].send(args)
 
     @require_role("player")
     @log_this_async
