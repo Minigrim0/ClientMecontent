@@ -52,6 +52,16 @@ class InvalidArgumentException(Exception):
         return f"L'argument {self.arg} n'est pas correct (Attendu : {self.argumentType})"
 
 
+class MissingAttachementException(Exception):
+    """The command misses an attachement"""
+
+    def __init__(self, requirementAttachements: int):
+        self.requiredAttachements = requirementAttachements
+
+    def __str__(self):
+        return f"Le nombre de pieces jointes à la commande est trop peit (Requis: {self.requiredAttachements})"
+
+
 class IllegalUserException(Exception):
     """The user does not belong to the game"""
 

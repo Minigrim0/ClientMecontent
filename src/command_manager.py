@@ -5,7 +5,7 @@ from discord import Embed
 from discord.utils import get
 
 from src.decorators import log_this_async, require_role, require_parameters
-from src.exceptions import CommandNotFoundException, BadFormatException, IllegalPlaceException
+from src.exceptions import CommandNotFoundException, BadFormatException, IllegalPlaceException, MissingAttachementException
 
 from singleton.settings import Settings
 from singleton.game import Game
@@ -70,8 +70,11 @@ class CommandManager:
         if args["guild"] is not None:
             await args["initial_command"].delete()
             raise IllegalPlaceException()
-        game_id, artwork_title = args["command"]["args"]
+        if len(args["initial_command"].attachments) != 1:
+            raise MissingAttachementException(1)
+
         artwork_url = args["initial_command"].attachments[0].url
+        game_id, artwork_title = args["command"]["args"]
         Game.getInstance().submit(game_id, args["user"].id, artwork_url, artwork_title)
 
         await args["channel"].send("Ta participation a bien été enregistrée")
