@@ -1,4 +1,6 @@
 class CommandNotFoundException(Exception):
+    """The command corresponding has not been found"""
+
     def __init__(self, command: str):
         self.command = command
 
@@ -7,6 +9,8 @@ class CommandNotFoundException(Exception):
 
 
 class BadFormatException(Exception):
+    """The format of the command is not correct"""
+
     def __init__(self, command: str, pattern: str):
         self.command = command
         self.pattern = pattern
@@ -16,6 +20,8 @@ class BadFormatException(Exception):
 
 
 class BadTypeArgumentException(Exception):
+    """The argument given with the command does not have the right type"""
+
     def __init__(self, arg, requiredType):
         self.arg = arg
         self.requiredType = requiredType
@@ -25,6 +31,8 @@ class BadTypeArgumentException(Exception):
 
 
 class InvalidFieldException(Exception):
+    """The given argument corresponds to no known field"""
+
     def __init__(self, arg, possibleFields):
         self.arg = arg
         self.possibleFields = possibleFields
@@ -34,6 +42,8 @@ class InvalidFieldException(Exception):
 
 
 class InvalidArgumentException(Exception):
+    """The given argument is not correct"""
+
     def __init__(self, arg, argumentType):
         self.arg = arg
         self.argumentType = argumentType
@@ -43,9 +53,21 @@ class InvalidArgumentException(Exception):
 
 
 class IllegalUserException(Exception):
+    """The user does not have the rights to do the command he's trying to do"""
+
     def __init__(self, user, game_id):
         self.user = user
         self.game = game_id
 
     def __str__(self):
         return f"L'utilisateur <@{self.user}> n'est pas dans la partie {self.game_id}"
+
+
+class IllegalPlaceException(Exception):
+    """The command has not been executed at the right place"""
+
+    def __init__(self, requiredPlace="Message privé"):
+        self.requiredPlace = requiredPlace
+
+    def __str__(self):
+        return f"Ce n'est pas l'endroit pour effectuer cette commande (Requis : {self.requiredPlace})"
