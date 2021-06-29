@@ -167,7 +167,12 @@ class Game:
         return game.duration
 
     def submit(self, game_id: str, user_id: str, artwork_url: str, artwork_title: str):
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, requiredType=int)
         game = GameDO(id=int(game_id)).load()
+        if game.phase == 0:
+            raise Exception("La partie n'a pas encore commencé, vous ne pouvez pas encore envoyer de proposition")
+
         game.addSubmission(user_id, artwork_title, artwork_url)
 
     def gameEmbed(self, game_id: str):
