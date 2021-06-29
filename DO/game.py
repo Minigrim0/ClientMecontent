@@ -59,6 +59,10 @@ class GameDO:
         return "$Error$"
 
     @property
+    def participations_display(self):
+        return f"{len(self.artworks)}/{len(self.participants)}"
+
+    @property
     def parameters(self):
         parameters = f"Durée du jeu : {utils.secondsToHMS(self.game_duration)}\n"
         parameters += f"Durée des votes : {utils.secondsToHMS(self.vote_duration)}\n"

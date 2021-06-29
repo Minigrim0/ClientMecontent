@@ -182,6 +182,7 @@ class Game:
             embed.add_field(name="#Mots choisits", value=game.words_display, inline=True)
             embed.add_field(name="#Date de début", value=game.start_date_display, inline=True)
             embed.add_field(name="#Date de fin", value=game.end_date_display, inline=True)
+            embed.add_field(name="#Participations", value=game.participations_display, inline=True)
 
         embed.add_field(name="#Partipants", value=game.participants_display, inline=False)
 
