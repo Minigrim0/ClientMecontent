@@ -3,10 +3,10 @@ import emoji
 import datetime
 
 from src.decorators import needsDatabase
-from src.exceptions import BadTypeArgumentException
 import src.utils as utils
 
 from DO.user import UserDO
+from DO.artwork import ArtworkDO
 
 
 class GameDO:
@@ -26,6 +26,7 @@ class GameDO:
 
         self.words = []
         self.participants = []
+        self.artworks = []
 
         self.phases = ["Enregistrement", "En cours", "Votes en cours", "Partie terminée"]
 
@@ -120,6 +121,9 @@ class GameDO:
         if len(self.participants) == 0:
             self.delete()
             raise Exception(f"Tous les joueurs ont quitté la partie #{self.id}. Supression...")
+
+        for artwork in db.fetch(script="get_artworks", params=(self.id,)):
+            self.artworks.append(ArtworkDO(*artwork))
 
         self.words = [word[0] for word in db.fetch(script="get_game_words", params=(self.id,))]
         host = db.fetch(script="get_game_host", params=(self.id,))
