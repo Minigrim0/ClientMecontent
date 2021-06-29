@@ -77,6 +77,19 @@ class Game:
         return game.end_date
 
     def modGame(self, game_id: str, user_id: int, field: str, value):
+        """Modifies the given parameter to the given value
+
+        Args:
+            game_id (str): the id of the game on which to modify the parameter
+            user_id (int): the id of the user who made the modification
+            field (str): The filed to modify
+            value (?): The new value
+
+        Raises:
+            BadTypeArgumentException: In case the argument has a bad type
+            PermissionError: In case the user does not have the permission to run this command on this game
+            InvalidFieldException: In case the field is not recognised
+        """
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, requiredType=int)
         game = GameDO(id=int(game_id)).load()
@@ -142,6 +155,14 @@ class Game:
         game.addOrRemoveUser(user, add=False)
 
     def getGameDuration(self, game_id: int):
+        """Returns the duration of a game
+
+        Args:
+            game_id (int): The id of the game to get the duration of
+
+        Returns:
+            int: the duration of the game in seconds
+        """
         game = GameDO(id=game_id).load()
         return game.duration
 

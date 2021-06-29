@@ -53,7 +53,7 @@ class InvalidArgumentException(Exception):
 
 
 class IllegalUserException(Exception):
-    """The user does not have the rights to do the command he's trying to do"""
+    """The user does not belong to the game"""
 
     def __init__(self, user, game_id):
         self.user = user
