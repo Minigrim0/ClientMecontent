@@ -166,6 +166,9 @@ class Game:
         game = GameDO(id=game_id).load()
         return game.duration
 
+    def submit(self, game_id: str, user_id: str, artwork_url: str, artwork_title: str):
+        pass
+
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, requiredType=int)

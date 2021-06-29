@@ -64,15 +64,17 @@ class CommandManager:
             "initial_command": command
         }
 
-    @require_parameters(1)
+    @require_parameters(2)
     @log_this_async
     async def submit(self, args):
         if args["guild"] is not None:
             await args["initial_command"].delete()
             raise IllegalPlaceException()
-        game_id = args["command"]["args"][0]
+        game_id, artwork_title = args["command"]["args"]
+        artwork_url = args["initial_command"].attachments[0].url
+        Game.getInstance().submit(game_id, args["user"].id, artwork_url, artwork_title)
 
-        await args["channel"].send(args)
+        await args["channel"].send("Ta participation a bien été enregistrée")
 
     @require_role("player")
     @log_this_async
