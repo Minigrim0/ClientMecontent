@@ -77,11 +77,12 @@ class require_channel:
             isInGuild = kwargs["args"]["guild"] is not None
             channel = kwargs["args"]["channel"]
 
+            error_first_part = "Cette commande ne peut pas être effectuée dans ce channel !"
             if isInGuild == self.in_guild:
                 if self.in_guild and len(self.channels) > 0 and str(channel.id) not in self.channels:
                     await kwargs["args"]["initial_command"].delete()
                     await kwargs["args"]["channel"].send(
-                        f"Cette commande ne peut pas être effectuée dans ce channel ! (Channel(s) autorisé(s): {self.good_channels})"
+                        f"{error_first_part} (Channel(s) autorisé(s): {self.good_channels})"
                     )
                 else:
                     await func(*args, **kwargs)
@@ -89,7 +90,7 @@ class require_channel:
                 required = "Message Privé" if isInGuild else "Serveur"
                 await kwargs["args"]["initial_command"].delete()
                 await kwargs["args"]["channel"].send(
-                    f"Cette command ne peut pas être effectuée dans ce channel ! (Requis: {required})"
+                    f"{error_first_part} (Requis: {required})"
                 )
 
         return wrapper  # (*args, **kwargs)
