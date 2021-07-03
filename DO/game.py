@@ -118,8 +118,11 @@ class GameDO:
     def participants_display(self):
         display = ""
         for user in self.participants:
-            display += f"- {user[0]}"
-            if user[1] == self.host:
+            user = UserDO(id=user[1]).load()
+            display += f"- {user.username}"
+            if self.phase == 3:
+                display += f" - {user.game_score(self.id)}"
+            if user.id == self.host.id:
                 display += f" {emoji.emojize(':crown:')}"
             display += "\n"
         return display
@@ -172,7 +175,9 @@ class GameDO:
         self.vote_duration = data[5]
         self.nb_words = data[6]
 
-        self.participants = db.fetch(script="get_participants", params=(self.id,))
+        self.participants = []
+        for username, user_id in db.fetch(script="get_participants", params=(self.id,)):
+            self.participants.append(UserDO(id=user_id).load())
         if len(self.participants) == 0:
             self.delete()
             raise Exception(f"Tous les joueurs ont quitté la partie #{self.id}. Supression...")
@@ -183,9 +188,9 @@ class GameDO:
         self.words = [word[0] for word in db.fetch(script="get_game_words", params=(self.id,))]
         host = db.fetch(script="get_game_host", params=(self.id,))
         if len(host) == 0:  # Set a user host if no user is host
-            self.setHost(UserDO(id=self.participants[0][1]))
+            self.setHost(self.participants[0])
         else:
-            self.host = host[0][0]
+            self.host = UserDO(id=host[0][0]).load()
 
         return self
 
@@ -200,7 +205,7 @@ class GameDO:
         artwork_id = db.update(script="add_artwork", params=(artwork_title, artwork_url))
         db.update(script="upd_artwork_submission", params=(artwork_id, user_id, self.id))
 
-    def user_submitted(self, user_id):
+    def user_submitted(self, user_id: int):
         for artwork in self.artworks:
             if user_id == artwork.user_id:
                 return True
@@ -214,10 +219,10 @@ class GameDO:
         db.update(script="del_game", params=(self.id,))
 
     @needsDatabase
-    def setHost(self, user, db):
+    def setHost(self, user: UserDO, db):
         db.update(script="del_game_hosts", params=(self.id,))
         db.update(script="add_game_host", params=(self.id, user.id))
-        self.host = user.id
+        self.host = user
 
     @needsDatabase
     def start(self, words, db):
