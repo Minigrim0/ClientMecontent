@@ -32,7 +32,7 @@ class Database:
         Args:
             script (str): the name of the script to execute
         """
-        print("Executing FETCH :\n", scripts[script], "\nwith parameters", params)
+        # print("Executing FETCH :\n", scripts[script], "\nwith parameters", params)
         return cursor.execute(scripts[script], params).fetchall()
 
     @connected
@@ -45,7 +45,7 @@ class Database:
         Returns:
             int: the id of the newly inserted_row
         """
-        print("Executing UPDATE :\n", scripts[script], "\nwith parameters", params)
+        # print("Executing UPDATE :\n", scripts[script], "\nwith parameters", params)
         cursor.execute(scripts[script], params)
         db.commit()
         return cursor.execute("SELECT last_insert_rowid()").fetchall()[0][0]
