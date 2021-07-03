@@ -3,10 +3,12 @@ import os
 
 from singleton.client import Bot
 from singleton.database import Database
+from singleton.cog import GameCog
 
 if __name__ == "__main__":
     client = Bot.getInstance()
     database = Database.getInstance()
+    cog = GameCog.getInstance()
 
     token = os.environ.get("API_KEY", None)
     if token is None:
