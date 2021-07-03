@@ -7,6 +7,8 @@ from src.exceptions import (
     IllegalUserException,
 )
 
+from src.utils import convert_mention_to_id
+
 from DO.user import UserDO
 from DO.game import GameDO
 
@@ -100,7 +102,7 @@ class Game:
             raise BadTypeArgumentException(arg=game_id, requiredType=int)
         game = GameDO(id=int(game_id)).load()
         if user_id != game.host:
-            raise PermissionError()
+            raise PermissionError("Tu n'as pas la permission de faire ceci !")
 
         fields = ["host", "game_duration", "vote_duration", "nb_words"]
         if field not in fields:
@@ -114,7 +116,7 @@ class Game:
             self.modDuration(game, field, value)
 
     def modHost(self, game: GameDO, user: str):
-        user_id = user.replace("<", "").replace(">", "").replace("@", "")
+        user_id = convert_mention_to_id(user)
         if not user_id.isdigit():
             raise InvalidArgumentException(user, "mention d'un utilisateur")
 
@@ -180,6 +182,25 @@ class Game:
             raise Exception("La partie n'a pas encore commencé, vous ne pouvez pas encore envoyer de proposition")
 
         game.addSubmission(user_id, artwork_title, artwork_url)
+
+    def vote(self, game_id: str, user_id: str, participation_id: str):
+        if not game_id.isdigit():
+            raise BadTypeArgumentException(arg=game_id, requiredType=int)
+        game = GameDO(id=int(game_id)).load()
+        user = UserDO(id=int(user_id)).load()
+
+        if game.phase != 2:
+            raise Exception("Cette partie n'est pas en phase de vote !")
+        if int(participation_id) > len(game.artworks):
+            raise Exception(f"L'ID de participation n'est pas bon (max: {len(game.artworks)})")
+
+        participation = game.artworks[int(participation_id)-1]
+        if participation.user_id == user_id:
+            raise Exception("Tu ne peux pas voter pour toi même !")
+        if user.votedFor(game_id):
+            raise Exception("Tu as déjà voté pour cette partie !")
+
+        game.addVote(user_id, participation.id)
 
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():
