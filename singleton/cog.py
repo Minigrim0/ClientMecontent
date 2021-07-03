@@ -1,5 +1,9 @@
 from discord.ext import commands, tasks
 
+from src.decorators import needsDatabase
+
+from DO.game import GameDO
+
 
 class GameCog(commands.Cog):
     instance = None
@@ -7,7 +11,7 @@ class GameCog(commands.Cog):
     @staticmethod
     def getInstance():
         """Returns the instance of the singleton
-        
+
         Returns:
             GameCog: The instance
         """
@@ -23,16 +27,43 @@ class GameCog(commands.Cog):
         self.nearGames = []
         self.nearVotes = []
 
+        self.endGameAndVotes.start()
+        self.loadNearlyFinishedGamesAndVotes.start()
+
     @tasks.loop(seconds=1)
     async def endGameAndVotes(self):
         for game in self.nearGames:
-            if game.justEnded():
-                await game.voteTime()
+            if game.just_ended_game:
+                print(f"Game {game} done")
+                game.endGame()
+                # TODO: Advertise vote start
 
         for vote in self.nearVotes:
-            if vote.justEnded():
-                await vote.showScore()
+            if vote.just_ended_vote:
+                vote.endVote()
+                # TODO: Advertise vote end + display results
+
+    @needsDatabase
+    def getNearlyEndingGames(self, db):
+        """Retreive both the nearly ending games and the nearly ending votes"""
+        games = db.fetch(script="get_ending_games", params=(300,))
+        nearGames = []
+        for game_id in games:
+            game = GameDO(id=int(game_id[0])).load()
+            nearGames.append(game)
+        self.nearGames = nearGames
+
+        votes = db.fetch(script="get_ending_votes", params=(300,))
+        nearVotes = []
+        for vote_id in votes:
+            vote = GameDO(id=int(vote_id[0])).load()
+            nearVotes.append(vote)
+        self.nearVotes = nearVotes
 
     @tasks.loop(seconds=30)
-    def loadNearlyFinishedGamesAndVotes(self):
-        pass
+    async def loadNearlyFinishedGamesAndVotes(self):
+        """
+        Cog task to retreive both the nearly ending games and the
+        nearly ending votes
+        """
+        self.getNearlyEndingGames()
