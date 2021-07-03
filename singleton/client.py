@@ -1,7 +1,8 @@
 import logging
 
 import discord
-from src.command_manager import CommandManager
+
+from singleton.settings import Settings
 
 
 class Bot(discord.Client):
@@ -24,6 +25,8 @@ class Bot(discord.Client):
         else:
             Bot.instance = self
 
+        from src.command_manager import CommandManager
+
         self.command_manager = CommandManager(self)
 
         super().__init__()
@@ -37,3 +40,17 @@ class Bot(discord.Client):
 
         if message.content.startswith("!"):
             await self.command_manager.execute(command=message)
+
+    def getChannel(self, channel_name: str) -> discord.channel:
+        """Returns the channel corresponding to the given name
+
+        Args:
+            channel_name (str): the name of the channel (in the settings file)
+
+        Returns:
+            discord.channel: The corresponding discord channel
+        """
+        print("Getting channel", channel_name)
+        channel_id = Settings.getInstance()["channels"][channel_name]
+        print(channel_id)
+        return self.get_channel(int(channel_id))
