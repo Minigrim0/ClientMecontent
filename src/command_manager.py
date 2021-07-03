@@ -5,7 +5,8 @@ from discord import Embed
 from discord.utils import get
 
 from src.decorators import log_this_async, require_role, require_parameters
-from src.exceptions import CommandNotFoundException, BadFormatException, IllegalPlaceException, MissingAttachementException
+from src.exceptions import (
+    CommandNotFoundException, BadFormatException, IllegalPlaceException, MissingAttachementException)
 
 from singleton.settings import Settings
 from singleton.game import Game
