@@ -1,3 +1,4 @@
+import time
 import pytz
 import emoji
 import datetime
@@ -35,6 +36,23 @@ class GameDO:
         if 0 <= self.phase < len(self.phases):
             return self.phases[self.phase]
         return "$Error$"
+
+    @property
+    def just_ended_game(self):
+        timezone = pytz.timezone(time.tzname[0])
+
+        end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+
+        return self.phase == 1 and datetime.datetime.now().astimezone(timezone) > end_date
+
+    @property
+    def just_ended_vote(self):
+        timezone = pytz.timezone(time.tzname[0])
+
+        end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S")
+        vote_end_time = (end_date + datetime.timedelta(seconds=self.vote_duration)).replace(tzinfo=pytz.utc)
+
+        return self.phase == 2 and datetime.datetime.now().astimezone(timezone) > vote_end_time
 
     @property
     def start_date_display(self):
@@ -82,6 +100,16 @@ class GameDO:
                 display += f" {emoji.emojize(':crown:')}"
             display += "\n"
         return display
+
+    @needsDatabase
+    def endVote(self, db):
+        db.update(script="upd_game_phase", params=(3, self.id))
+        self.load()
+
+    @needsDatabase
+    def endGame(self, db):
+        db.update(script="upd_game_phase", params=(2, self.id))
+        self.load()
 
     @needsDatabase
     def setWords(self, words, db):
