@@ -4,6 +4,8 @@ from src.decorators import needsDatabase
 
 from DO.game import GameDO
 
+from singleton.game import Game
+
 
 class GameCog(commands.Cog):
     instance = None
@@ -34,14 +36,15 @@ class GameCog(commands.Cog):
     async def endGameAndVotes(self):
         for game in self.nearGames:
             if game.just_ended_game:
-                print(f"Game {game} done")
                 game.endGame()
-                # TODO: Advertise vote start
+                print("Advertising for votes")
+                await Game.getInstance().showParticipations(game_id=game.id, vote=True)
 
         for vote in self.nearVotes:
             if vote.just_ended_vote:
                 vote.endVote()
-                # TODO: Advertise vote end + display results
+                print("Advertising for winner")
+                await Game.getInstance().showParticipations(game_id=vote.id, vote=False)
 
     @needsDatabase
     def getNearlyEndingGames(self, db):
@@ -60,7 +63,7 @@ class GameCog(commands.Cog):
             nearVotes.append(vote)
         self.nearVotes = nearVotes
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=10)
     async def loadNearlyFinishedGamesAndVotes(self):
         """
         Cog task to retreive both the nearly ending games and the

@@ -11,6 +11,7 @@ from DO.user import UserDO
 from DO.game import GameDO
 
 from singleton.word import Word
+from singleton.client import Bot
 
 
 class Game:
@@ -202,3 +203,14 @@ class Game:
         embed.add_field(name="#Partipants", value=game.participants_display, inline=False)
 
         return embed
+
+    async def showParticipations(self, game_id: str, vote: bool = True):
+        game = GameDO(id=game_id).load()
+
+        if vote:
+            channel = Bot.getInstance().getChannel("votes")
+        else:
+            channel = Bot.getInstance().getChannel("participations")
+
+        for index, artwork in enumerate(game.artworks):
+            await channel.send(embed=await artwork.asEmbed(game_id=game_id, index=index+1, revealAuthor=not vote))
