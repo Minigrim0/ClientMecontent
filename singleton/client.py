@@ -50,7 +50,5 @@ class Bot(discord.Client):
         Returns:
             discord.channel: The corresponding discord channel
         """
-        print("Getting channel", channel_name)
         channel_id = Settings.getInstance()["channels"][channel_name]
-        print(channel_id)
         return self.get_channel(int(channel_id))
