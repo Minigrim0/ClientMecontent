@@ -89,14 +89,14 @@ class GameDO:
             end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
             return (
                 end_date - datetime.datetime.now().astimezone(timezone)
-            ).strftime("%H heures %M minutes %S secondes")
+            )
         elif self.phase == 2:
             end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S")
             vote_end_time = (end_date + datetime.timedelta(seconds=self.vote_duration)).replace(tzinfo=pytz.utc)
 
             return (
                 vote_end_time - datetime.datetime.now().astimezone(timezone)
-            ).strftime("%H heures %M minutes %S secondes")
+            )
         return "$Error$"
 
     @property
