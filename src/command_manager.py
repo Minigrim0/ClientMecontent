@@ -29,7 +29,8 @@ class CommandManager:
             "leave": self.leaveGame,
             "info": self.gameInfo,
             "mod": self.modGame,
-            "submit": self.submit
+            "submit": self.submit,
+            "vote": self.vote,
         }
         self.help = Settings.getInstance()["help"]
 
@@ -74,6 +75,15 @@ class CommandManager:
         Game.getInstance().submit(game_id, args["user"].id, artwork_url, artwork_title)
 
         await args["channel"].send("Ta participation a bien été enregistrée")
+
+    @require_parameters(2)
+    @require_channel(inGuild=False)
+    @log_this_async
+    async def vote(self, args):
+        game_id, participation_id = args["command"]["args"]
+        Game.getInstance().vote(game_id, args["user"].id, participation_id)
+
+        await args["channel"].send("Ton vote a bien été enregistré")
 
     @require_role("player")
     @require_channel(inGuild=True, channels=["bot"])

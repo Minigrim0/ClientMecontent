@@ -3,8 +3,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS Users
 (
     ID         INTEGER PRIMARY KEY,
-    username   CHAR(128) NOT NULL,
-    score      INTEGER
+    username   CHAR(128) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Game
@@ -31,6 +30,16 @@ CREATE TABLE IF NOT EXISTS Artwork
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     title CHAR(255),
     url CHAR(512)
+);
+
+CREATE TABLE IF NOT EXISTS Vote
+(
+    user_id    INTEGER NOT NULL,
+    game_id    INTEGER NOT NULL,
+    artwork_id INTEGER NOT NULL,  -- The artwork to user voted for
+    CONSTRAINT fk_artwork FOREIGN KEY (artwork_id) REFERENCES Artwork (ID) ON DELETE CASCADE,
+    CONSTRAINT fk_game FOREIGN KEY (game_id) REFERENCES Game (ID) ON DELETE CASCADE
+    PRIMARY KEY (user_id, game_id)
 );
 
 CREATE TABLE IF NOT EXISTS userToGame

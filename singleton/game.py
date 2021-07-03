@@ -200,7 +200,7 @@ class Game:
         if user.votedFor(game_id):
             raise Exception("Tu as déjà voté pour cette partie !")
 
-        game.addVote(user_id, participation.id)
+        game.addVote(int(user_id), participation.id)
 
     def gameEmbed(self, game_id: str):
         if not game_id.isdigit():

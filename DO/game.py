@@ -190,6 +190,10 @@ class GameDO:
         return self
 
     @needsDatabase
+    def addVote(self, user_id: int, artwork_id: int, db):
+        db.update(script="add_vote", params=(user_id, self.id, artwork_id))
+
+    @needsDatabase
     def addSubmission(self, user_id: str, artwork_title: str, artwork_url: str, db):
         if self.user_submitted(user_id):
             raise Exception("Vous avez déjà soumis votre oeuvre pour cette partie")
