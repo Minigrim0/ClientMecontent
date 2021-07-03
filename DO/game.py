@@ -6,6 +6,8 @@ import datetime
 from src.decorators import needsDatabase
 import src.utils as utils
 
+from singleton.settings import Settings
+
 from DO.user import UserDO
 from DO.artwork import ArtworkDO
 
@@ -46,6 +48,10 @@ class GameDO:
         return self.phase == 1 and datetime.datetime.now().astimezone(timezone) > end_date
 
     @property
+    def color(self):
+        return int(Settings.getInstance()["colors"][str(self.phase)], 16)
+
+    @property
     def just_ended_vote(self):
         timezone = pytz.timezone(time.tzname[0])
 
@@ -74,6 +80,23 @@ class GameDO:
                 .astimezone(tz=pytz.timezone("Europe/Brussels"))
                 .strftime("%d-%m-%Y %H:%M:%S")
             )
+        return "$Error$"
+
+    @property
+    def time_left(self):
+        timezone = pytz.timezone(time.tzname[0])
+        if self.phase == 1:
+            end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+            return (
+                end_date - datetime.datetime.now().astimezone(timezone)
+            ).strftime("%H heures %M minutes %S secondes")
+        elif self.phase == 2:
+            end_date = datetime.datetime.strptime(self.end_date, "%Y-%m-%d %H:%M:%S")
+            vote_end_time = (end_date + datetime.timedelta(seconds=self.vote_duration)).replace(tzinfo=pytz.utc)
+
+            return (
+                vote_end_time - datetime.datetime.now().astimezone(timezone)
+            ).strftime("%H heures %M minutes %S secondes")
         return "$Error$"
 
     @property

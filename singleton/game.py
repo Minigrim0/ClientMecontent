@@ -186,12 +186,17 @@ class Game:
 
         game = GameDO(id=int(game_id)).load()
 
-        embed = Embed(title=f"Partie #{game_id} ({game.phase_display})", color=0xFF464A)
+        embed = Embed(title=f"Partie #{game_id} ({game.phase_display})", color=game.color)
         embed.add_field(name="#Paramètres", value=game.parameters, inline=True)
         if game.phase > 0:
             embed.add_field(name="#Mots choisits", value=game.words_display, inline=True)
             embed.add_field(name="#Date de début", value=game.start_date_display, inline=True)
-            embed.add_field(name="#Date de fin", value=game.end_date_display, inline=True)
+            if game.phase == 1:
+                embed.add_field(name="#Temps de jeu restant", value=game.time_left, inline=True)
+            elif game.phase == 2:
+                embed.add_field(name="#Temps de vote restant", value=game.time_left, inline=True)
+            else:
+                embed.add_field(name="#Date de fin", value=game.end_date_display, inline=True)
             embed.add_field(name="#Participations", value=game.participations_display, inline=True)
 
         embed.add_field(name="#Partipants", value=game.participants_display, inline=False)
