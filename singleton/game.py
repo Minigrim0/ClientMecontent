@@ -18,6 +18,11 @@ class Game:
 
     @staticmethod
     def getInstance():
+        """Returns the instance of the singleton
+
+        Returns:
+            Game: The instance
+        """
         if Game.instance is None:
             Game()
         return Game.instance

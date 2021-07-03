@@ -6,6 +6,11 @@ class Database:
 
     @staticmethod
     def getInstance():
+        """Returns the instance of the singleton
+
+        Returns:
+            Database: The instance
+        """
         if Database.instance is None:
             Database()
         return Database.instance

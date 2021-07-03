@@ -9,6 +9,11 @@ class Bot(discord.Client):
 
     @staticmethod
     def getInstance():
+        """Returns the instance of the singleton
+
+        Returns:
+            Bot: The instance
+        """
         if Bot.instance is None:
             Bot()
         return Bot.instance

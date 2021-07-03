@@ -8,6 +8,11 @@ class Settings:
 
     @staticmethod
     def getInstance(debug=False):
+        """Returns the instance of the singleton
+
+        Returns:
+            Settings: The instance
+        """
         if Settings.instance is None:
             Settings(debug=debug)
         return Settings.instance

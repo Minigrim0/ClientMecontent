@@ -8,6 +8,11 @@ class User:
 
     @staticmethod
     def getInstance():
+        """Returns the instance of the singleton
+
+        Returns:
+            User: The instance
+        """
         if User.instance is None:
             User()
         return User.instance

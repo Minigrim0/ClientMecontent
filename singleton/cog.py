@@ -7,6 +7,7 @@ class GameCog(commands.Cog):
     @staticmethod
     def getInstance():
         """Returns the instance of the singleton
+        
         Returns:
             GameCog: The instance
         """

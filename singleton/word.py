@@ -11,6 +11,11 @@ class Word:
 
     @staticmethod
     def getInstance():
+        """Returns the instance of the singleton
+
+        Returns:
+            Word: The instance
+        """
         if Word.instance is None:
             Word()
         return Word.instance

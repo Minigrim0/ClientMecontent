@@ -2,6 +2,8 @@ from src.decorators import needsDatabase
 
 
 class WordDO:
+    """Handles informations about a word, and it fetching/saving/deletion in the database"""
+
     def __init__(self, id=None, word=None, user=None):
         self.id = id
         self.word = word
