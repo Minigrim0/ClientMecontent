@@ -1,12 +1,11 @@
 import re
-import random
 
 from discord import Embed
 from discord.utils import get
 
-from src.decorators import log_this_async, require_role, require_parameters
+from src.decorators import log_this_async, require_role, require_parameters, require_channel
 from src.exceptions import (
-    CommandNotFoundException, BadFormatException, IllegalPlaceException, MissingAttachementException)
+    CommandNotFoundException, BadFormatException, MissingAttachementException)
 
 from singleton.settings import Settings
 from singleton.game import Game
@@ -18,7 +17,6 @@ class CommandManager:
     def __init__(self, client):
         self.client = client
         self.commands = {
-            "greet": self.greet,
             "help": self.help,
             "wadd": self.addWord,
             "wdel": self.delWord,
@@ -66,14 +64,11 @@ class CommandManager:
         }
 
     @require_parameters(2)
+    @require_channel(inGuild=False)
     @log_this_async
     async def submit(self, args):
-        if args["guild"] is not None:
-            await args["initial_command"].delete()
-            raise IllegalPlaceException()
         if len(args["initial_command"].attachments) != 1:
             raise MissingAttachementException(1)
-
         artwork_url = args["initial_command"].attachments[0].url
         game_id, artwork_title = args["command"]["args"]
         Game.getInstance().submit(game_id, args["user"].id, artwork_url, artwork_title)
@@ -81,6 +76,7 @@ class CommandManager:
         await args["channel"].send("Ta participation a bien été enregistrée")
 
     @require_role("player")
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def newGame(self, args: dict):
         game_id = Game.getInstance().createGame(args["command"]["args"], args["user"].id)
@@ -88,11 +84,13 @@ class CommandManager:
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=str(game_id)))
 
     @require_parameters(1)
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def gameInfo(self, args: dict):
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=args["command"]["args"][0]))
 
     @require_parameters(1)
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def joinGame(self, args: dict):
         game_id = args["command"]["args"][0]
@@ -101,6 +99,7 @@ class CommandManager:
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
     @require_parameters(3)
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def modGame(self, args: dict):
         game_id, field, value = args["command"]["args"]
@@ -109,6 +108,7 @@ class CommandManager:
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
     @require_parameters(1)
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def leaveGame(self, args: dict):
         game_id = args["command"]["args"][0]
@@ -118,6 +118,7 @@ class CommandManager:
 
     @require_role("player")
     @require_parameters(1)
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def startGame(self, args: dict):
         game_id = args["command"]["args"][0]
@@ -125,6 +126,7 @@ class CommandManager:
 
         await args["channel"].send(embed=Game.getInstance().gameEmbed(game_id=game_id))
 
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def register(self, args: dict):
         if not User.getInstance().exists(args["user"]):
@@ -136,11 +138,13 @@ class CommandManager:
             await args["channel"].send("Tu es déjà enregistré !")
 
     @require_role("player")
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def getScore(self, args: dict):
         await args["channel"].send(embed=User.getInstance().getScore(args["user"]))
 
     @require_role("editor")
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def addWord(self, args: dict):
         for word in args["command"]["args"]:
@@ -150,6 +154,7 @@ class CommandManager:
         await args["channel"].send(response)
 
     @require_role("player")
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def listWord(self, args: dict):
         listEmbed = Word.getInstance().wordsEmbed()
@@ -157,6 +162,7 @@ class CommandManager:
         await args["channel"].send(embed=listEmbed)
 
     @require_role("editor")
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def delWord(self, args: dict):
         for word in args["command"]["args"]:
@@ -165,16 +171,7 @@ class CommandManager:
             else:
                 await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
 
-    @log_this_async
-    async def greet(self, args: dict):
-        """Greets the user
-
-        Args:
-            args (dict): The argument dictionnary
-        """
-        greets = ["Hello {}", "Salut {}", "Coucou {}", "Hey {}", "{}, bien ou quoi ?"]
-        await args["channel"].send(random.choice(greets).format(args["user"].mention))
-
+    @require_channel(inGuild=True, channels=["bot"])
     @log_this_async
     async def help(self, args: dict):
         """Displays help messages

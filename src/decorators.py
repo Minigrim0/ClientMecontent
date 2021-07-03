@@ -6,6 +6,7 @@ import sys
 
 from src.utils import send_error_message, databaseLocation
 from singleton.settings import Settings
+from singleton.client import Bot
 
 
 class require_role:
@@ -45,6 +46,50 @@ class require_parameters:
             else:
                 await kwargs["args"]["channel"].send(
                     f"Ta commande n'a pas le bon nombre de paramètres ! (Requis: {self.nb_parameters})"
+                )
+
+        return wrapper  # (*args, **kwargs)
+
+
+class require_channel:
+    """A decorator checking the place the command has been made in"""
+
+    def __init__(self, inGuild: bool = True, channels: list = []):
+        self.in_guild = inGuild
+
+        if len(channels) > 0:
+            channels = [Settings.getInstance()["channels"][channel] for channel in channels]
+        self.channels = channels
+
+    @property
+    def good_channels(self):
+        bot = Bot.getInstance()
+        msg = ""
+        for channel in self.channels:
+            channel = bot.get_channel(int(channel))
+            msg += channel.mention + ", "
+        return msg[:-2]
+
+    def __call__(self, *args, **kwargs):
+        func = args[0]
+
+        async def wrapper(*args, **kwargs):
+            isInGuild = kwargs["args"]["guild"] is not None
+            channel = kwargs["args"]["channel"]
+
+            if isInGuild == self.in_guild:
+                if self.in_guild and len(self.channels) > 0 and str(channel.id) not in self.channels:
+                    await kwargs["args"]["initial_command"].delete()
+                    await kwargs["args"]["channel"].send(
+                        f"Cette commande ne peut pas être effectuée dans ce channel ! (Channel(s) autorisé(s): {self.good_channels})"
+                    )
+                else:
+                    await func(*args, **kwargs)
+            else:
+                required = "Message Privé" if isInGuild else "Serveur"
+                await kwargs["args"]["initial_command"].delete()
+                await kwargs["args"]["channel"].send(
+                    f"Cette command ne peut pas être effectuée dans ce channel ! (Requis: {required})"
                 )
 
         return wrapper  # (*args, **kwargs)
