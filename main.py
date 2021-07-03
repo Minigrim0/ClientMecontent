@@ -1,3 +1,4 @@
+import discord
 import logging
 import os
 
@@ -9,6 +10,9 @@ if __name__ == "__main__":
     client = Bot.getInstance()
     database = Database.getInstance()
     cog = GameCog.getInstance()
+
+    intents = discord.Intents.default()
+    intents.members = True
 
     token = os.environ.get("API_KEY", None)
     if token is None:
