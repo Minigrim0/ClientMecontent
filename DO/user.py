@@ -10,7 +10,6 @@ class UserDO:
         self.id = id
         self.username = username
         self.games = []
-        self.victories = 0
         self.participations = 0
         self.votes = []
 
@@ -31,10 +30,9 @@ class UserDO:
         data = db.fetch(script="get_user", params=(self.id,))
 
         if len(data) != 0:
-            self.id, self.username, _ = data[0]
+            self.id, self.username = data[0]
 
             self.games = [game[0] for game in db.fetch(script="get_user_games", params=(self.id,))]
-            self.victories = db.fetch(script="get_user_victories", params=(self.id,))[0][0]
             self.participations = db.fetch(script="get_user_participations", params=(self.id,))[0][0]
 
         votes = db.fetch(script="get_user_votes", params=(int(self.id),))
@@ -49,6 +47,15 @@ class UserDO:
             if vote.game_id == game_id:
                 return True
         return False
+
+    @property
+    def victories(self):
+        from DO.game import GameDO
+
+        victories = 0
+        for game in self.games:
+            victories += GameDO(id=game).load().winnerUser.id == self.id
+        return victories
 
     @property
     def score(self):
