@@ -37,12 +37,14 @@ class GameCog(commands.Cog):
         for game in self.nearGames:
             if game.just_ended_game:
                 game.endGame()
+                await game.advertiseEnd(phase=1)
                 print("Advertising for votes")
                 await Game.getInstance().showParticipations(game_id=game.id, vote=True)
 
         for vote in self.nearVotes:
             if vote.just_ended_vote:
                 vote.endVote()
+                await game.advertiseEnd(phase=2)
                 print("Advertising for winner")
                 await Game.getInstance().showParticipations(game_id=vote.id, vote=False)
 
