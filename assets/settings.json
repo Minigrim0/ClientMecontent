@@ -11,7 +11,7 @@
         "start": "Démarre la partie donnée en paramètre"
     },
     "database": {
-        "location": "assets/photo.db"
+        "location": "/database/photo.db"
     },
     "roles": {
         "admin": "463818638508687369",

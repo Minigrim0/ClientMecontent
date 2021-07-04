@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  cuttersock:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: python3 main.py
+    env_file:
+      - ./.env
+    volumes:
+      - database:/database
+
+volumes:
+  database:
