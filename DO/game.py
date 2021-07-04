@@ -26,6 +26,7 @@ class GameDO:
         self.vote_duration = vote_duration
         self.nb_words = nb_words
         self.host = None
+        self.winnerUser = None
 
         self.words = []
         self.participants = []
@@ -116,7 +117,7 @@ class GameDO:
 
     @property
     def winner(self):
-        return self.winner.username
+        return self.winnerUser.username
 
     @property
     def participants_display(self):
@@ -195,8 +196,9 @@ class GameDO:
         else:
             self.host = UserDO(id=host[0][0]).load()
 
-        winner_id = db.fetch(script="get_game_winner", params=(self.id, self.id))[0][0]
-        self.winner = UserDO(id=int(winner_id)).load()
+        if self.phase == 3:
+            winner_id = db.fetch(script="get_game_winner", params=(self.id, self.id))[0][0]
+            self.winnerUser = UserDO(id=int(winner_id)).load()
 
         return self
 
