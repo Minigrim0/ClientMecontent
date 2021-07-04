@@ -101,7 +101,7 @@ class Game:
         if not game_id.isdigit():
             raise BadTypeArgumentException(arg=game_id, requiredType=int)
         game = GameDO(id=int(game_id)).load()
-        if user_id != game.host:
+        if user_id != game.host.id:
             raise PermissionError("Tu n'as pas la permission de faire ceci !")
 
         fields = ["host", "game_duration", "vote_duration", "nb_words"]
