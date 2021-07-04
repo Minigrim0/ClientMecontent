@@ -20,8 +20,7 @@ class UserDO:
         if self.id is None:
             raise Exception("Le champ id ne peut pas être vide")
 
-        # TODO: Handle SQLErrors
-        self.id = db.update(script="add_user", params=(self.id, self.username, self.score))
+        self.id = db.update(script="add_user", params=(self.id, self.username))
 
     @needsDatabase
     def load(self, db):
