@@ -8,7 +8,13 @@
         "register": "Enregistre l'utilisateur comme photographe",
         "score": "Donne son score à l'utilisateur à l'origine de la commande",
         "new": "Créer une nouvelle partie",
-        "start": "Démarre la partie donnée en paramètre"
+        "start": "Démarre la partie donnée en paramètre",
+        "join": "Permet de rejoindre la partie donnée en paramètre",
+        "leave": "Permet de quitter la partie donnée en paramètre",
+        "info": "Affiche des informations sur la partie donnée en paramètres",
+        "mod": "Permet de modifier les paramètres d'une partie",
+        "submit": "Permet d'envoyer sa participation a une partie (/!\\ en message privé)",
+        "vote": "Permet de voter pour une œuvre (/!\\ en message privé)"
     },
     "database": {
         "location": "/database/photo.db"
