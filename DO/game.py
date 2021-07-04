@@ -115,10 +115,13 @@ class GameDO:
         return "\n".join([f"- {word}" for word in self.words])
 
     @property
+    def winner(self):
+        return self.winner.username
+
+    @property
     def participants_display(self):
         display = ""
         for user in self.participants:
-            user = UserDO(id=user[1]).load()
             display += f"- {user.username}"
             if self.phase == 3:
                 display += f" - {user.game_score(self.id)}"
@@ -191,6 +194,9 @@ class GameDO:
             self.setHost(self.participants[0])
         else:
             self.host = UserDO(id=host[0][0]).load()
+
+        winner_id = db.fetch(script="get_game_winner", params=(self.id, self.id))[0][0]
+        self.winner = UserDO(id=int(winner_id)).load()
 
         return self
 
