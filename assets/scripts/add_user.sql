@@ -1,1 +1,1 @@
-INSERT INTO Users (id, username, score) VALUES (?, ?, ?)
+INSERT INTO Users (id, username) VALUES (?, ?)
