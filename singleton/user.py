@@ -30,8 +30,7 @@ class User:
         return UserDO(id=user.id).load().username is not None
 
     def getScore(self, discord_user):
-        user = UserDO(id=discord_user.id)
-        user.load()
+        user = UserDO(id=discord_user.id).load()
 
         embed = Embed(title=f"Profil de {user.username}", color=0xFF464A)
         embed.set_thumbnail(url=discord_user.avatar_url)
