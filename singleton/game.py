@@ -194,7 +194,7 @@ class Game:
         if int(participation_id) > len(game.artworks):
             raise Exception(f"L'ID de participation n'est pas bon (max: {len(game.artworks)})")
 
-        participation = game.artworks[int(participation_id)-1]
+        participation = game.artworks[int(participation_id) - 1]
         if participation.user_id == user_id:
             raise Exception("Tu ne peux pas voter pour toi même !")
         if user.votedFor(game_id):
@@ -235,7 +235,8 @@ class Game:
 
         for index, artwork in enumerate(game.artworks):
             if game.phase != 3 or artwork.user_id != game.winnerUser.id:
-                await channel.send(embed=await artwork.asEmbed(game_id=game_id, index=index+1, revealAuthor=not vote))
+                await channel.send(
+                    embed=await artwork.asEmbed(game_id=game_id, index=index + 1, revealAuthor=not vote))
 
     async def advertiseEnd(self, game_id: int, phase: int = 1):
         game = GameDO(id=game_id).load()

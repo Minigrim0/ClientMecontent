@@ -57,4 +57,4 @@ def getDiffElements(initialList: list, newList: list) -> list:
 
 
 def convert_mention_to_id(mention: str) -> str:
-    return mention[1:][:len(mention)-2].replace("@", "").replace("!", "")
+    return mention[1:][:len(mention) - 2].replace("@", "").replace("!", "")
