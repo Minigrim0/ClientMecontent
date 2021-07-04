@@ -235,3 +235,13 @@ class Game:
 
         for index, artwork in enumerate(game.artworks):
             await channel.send(embed=await artwork.asEmbed(game_id=game_id, index=index+1, revealAuthor=not vote))
+
+    async def advertiseEnd(self, game_id: int, phase: int = 1):
+        game = GameDO(id=game_id).load()
+
+        channel = Bot.getInstance().getChannel("bot")
+        vote_channel = Bot.getInstance().getChannel("votes")
+        if phase == 1:
+            await channel.send(f"Fin de la partie #{game.id} ! Place aux votes dans le channel {vote_channel.mention}")
+        if phase == 2:
+            await channel.send(f"Fin des votes de la partie #{game.id} ! Le vainqueur est {game.winner}")
