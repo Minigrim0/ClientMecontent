@@ -154,7 +154,7 @@ class CommandManager:
         await args["channel"].send(embed=User.getInstance().getScore(args["user"]))
 
     @require_role("editor")
-    @require_channel(inGuild=True, channels=["bot"])
+    @require_channel(inGuild=True, channels=["words"])
     @log_this_async
     async def addWord(self, args: dict):
         for word in args["command"]["args"]:
@@ -164,7 +164,7 @@ class CommandManager:
         await args["channel"].send(response)
 
     @require_role("player")
-    @require_channel(inGuild=True, channels=["bot"])
+    @require_channel(inGuild=True, channels=["words"])
     @log_this_async
     async def listWord(self, args: dict):
         listEmbed = Word.getInstance().wordsEmbed()
@@ -172,7 +172,7 @@ class CommandManager:
         await args["channel"].send(embed=listEmbed)
 
     @require_role("editor")
-    @require_channel(inGuild=True, channels=["bot"])
+    @require_channel(inGuild=True, channels=["words"])
     @log_this_async
     async def delWord(self, args: dict):
         for word in args["command"]["args"]:
@@ -181,7 +181,7 @@ class CommandManager:
             else:
                 await args["channel"].send(f"Le mot {word} n'existe pas dans la liste")
 
-    @require_channel(inGuild=True, channels=["bot"])
+    @require_channel(inGuild=True, channels=["bot", "words"])
     @log_this_async
     async def help(self, args: dict):
         """Displays help messages
